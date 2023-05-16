@@ -22,7 +22,7 @@ function presentInfoModal(event) {
   document.body.appendChild(infoModal);
 }
 
-function hideInfoModal() {
+function hideInfoModal() { 
   toggleBackdrop();
   document.body.removeChild(infoModal);
 }
