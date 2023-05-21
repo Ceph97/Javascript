@@ -15,9 +15,12 @@
 - We use semicolons to end statements in JS.
 
 ### JS USAGE: <a name="js-usage"></a>
+
 - Inline: `<button onclick="alert('Hello World!')">Click Me!</button>`
+
 - Internal: `<script> alert('Hello World!'); </script>`
     - Not recommended because it mixes HTML and JS.
+
 - External: `<script src="myScript.js"></script>`
     - Recommended because it separates HTML and JS
     - The external JS file must contain only JS code.
