@@ -4,6 +4,9 @@
     - [HOW IS JS EXECUTED?](#js-execution)
         - [JS ENVIRONMENT](#js-env)
 - [VARIABLES AND CONSTANTS](#variables)
+- [JS DATA TYPES](#js-data-types)
+- [JS OPERATORS](#js-operators)
+
 
 ## INTRODUCTION TO JS <a name="intro-js"></a>
 
@@ -71,10 +74,12 @@
 - Some naming conventions:
     - Use camelCase for variable names.
     - Use descriptive names for variables.
-    - Use uppercase for constants.
-    - Use underscore for private variables.
+    - Use uppercase for constants. ```const PI = 3.14;```
+    - Use underscore for private variables. ```_myVar```
     - Use ```$``` or ```_``` for special variables.
     - Snake case is not used in JS. ```my_var``` is not used.
+    - You cant start a variable name with a number. ```1myVar``` is not allowed.
+
 
 - JS is case sensitive. ```myVar``` and ```myvar``` are different variables.
 
@@ -83,4 +88,18 @@
 - Number: ```let num = 3;```
 - String: ```let str = "Hello World!";``` single or double quotes can be used.
 - Boolean: ```let bool = true;```
-- Null: ```let nullVar = null;``` 
+- Null: ```let nullVar = null;```
+
+## JS OPERATORS <a name="js-operators"></a>
+- Arithmetic operators: ```+ - * / % **```
+- Assignment operators: ```= += -= *= /= %= **=```
+- Comparison operators: ```== === != !== > < >= <=```
+- Logical operators: ```&& || !```
+- Bitwise operators: ```& | ^ ~ << >> >>>```
+- String operators: ```+```
+- Conditional (ternary) operator: ```condition ? exprIfTrue : exprIfFalse```
+- Comma operator: ```expr1, expr2, expr3```
+- Unary operators: ```delete typeof void```
+- Relational operators: ```in instanceof```
+- Ourput: ```console.log()```
+    - This will execute the code and print the output to the console.
