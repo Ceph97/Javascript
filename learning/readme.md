@@ -9,6 +9,14 @@
 - [STRING TEMPLATE LITERALS](#string-template-literals)
 - [CONDITIONALS](#conditionals)
 - [TYPE CONVERSION](#type-conversion)
+- [TRUTHY AND FALSY VALUES](#truthy-falsy)
+- [EQUALITY OPERATORS '==' vs '==='](#equality-operators)
+   - [DIFFERENT OPERATOR '!=' vs '!=='](#different-operator)
+   - [BOOLEAN LOGICAL OPERATORS](#boolean-logical-operators)
+- [PROMPT](#prompt)
+- [SWITCH STATEMENTS](#switch-statements)
+- [STATEMENTS AND EXPRESSIONS](#statements-expressions)
+- [CLICK HERE TO GO TO THE NEXT SECTION 2 (FUNCTIONS etc..)](readme2.md)
 
 
 
@@ -183,6 +191,7 @@
         console.log(`Sarah is too young. Wait another ${yearsLeft} years :)`);
     }
 ```
+- When ```if``` only has one line of code, we can omit the curly braces. ``` if (isOldEnough) console.log("Sarah can start driving license 🚗");```
 
 ## TYPE CONVERSION AND COERCION <a name="type-conversion"></a>
 - ```Type conversion``` is converting a value from one type to another.
@@ -207,3 +216,140 @@
     - Not all operators will coerce the values to strings.
         - ```- * /``` will convert the values to numbers.
         - ```+``` will convert the values to strings.
+
+## TRUTHY AND FALSY VALUES <a name="truthy-falsy"></a>
+
+- There are 5 falsy values in JS.
+    - Falsy values will be converted to ```false``` when we use them in a boolean context. For example:
+        - ```0```
+        - ```""``` empty string
+        - ```undefined```
+        - ```null```
+        - ```NaN```
+    - Example: else block will be executed as height is undefined, evaluated to false.
+        ```javascript
+        let height;
+        // Since height is not defined, it will return false as "UNDEFINED" is a falsy value
+        if (height) {
+            console.log("YAY! Height is defined");
+        }else {
+            console.log("Height is UNDEFINED");
+        }
+        ```
+    - Example 2: Imagine we are getting the height of a user from a server and it is set to ```0```.
+  
+        ```javascript
+        let height = 0;
+        // Since height is defined, it is supposed to return true however 0 is also a falsy value hence the else block will be executed.
+        if (height) {
+            console.log("YAY! Height is defined");
+        }else {
+            console.log("Height is UNDEFINED");
+        }
+        ```
+
+## EQUALITY OPERATORS: == VS === <a name="equality-operators"></a>
+
+- ```==``` is the loose equality operator.
+    - It will perform type coercion.
+    - ```"18" == 18``` will return ```true``` 
+    - NOTE: a String and a Number equal to each other as we are converting one data type to match another then comparison.
+    - Avoid using ```==``` as it can lead to bugs.
+
+- ```===``` is the strict equality operator.
+    - It will not perform type coercion.
+    - ```"18" === 18``` will return ```false```.
+
+    ### Different operators '!==' and '!=' <a name="different-operators"></a>
+
+    - ```!=``` is the loose inequality operator.
+        - It will perform type coercion.
+        - ```"18" != 18``` will return ```false``` 
+        - NOTE: a String and a Number equal to each other as we are converting one data type to match another then comparison.
+        - Avoid using ```!=``` as it can lead to bugs.
+
+    - ```!==``` is the strict inequality operator.
+
+    ### BOOLEAN LOGIC <a name="boolean-logic"></a>
+
+    - && (AND) OPERATOR
+        - ```true && true``` will return ```true```
+        - ```true && false``` will return ```false```
+        - ```false && true``` will return ```false```
+        - ```false && false``` will return ```false```
+
+    - || (OR) OPERATOR
+        - ```true || true``` will return ```true```
+        - ```true || false``` will return ```true```
+        - ```false || true``` will return ```true```
+        - ```false || false``` will return ```false```
+
+    - ! (NOT) OPERATOR
+        - ```!true``` will return ```false```
+        - ```!false``` will return ```true```
+
+
+## PROMPT <a name="prompt"></a>
+- ```prompt()``` is a function that will display a dialog box to the user with a message and an input field.
+    ```javascript
+        const inputYear = prompt("Enter your birth year");
+        console.log(Number(inputYear), inputYear);
+        console.log(Number(inputYear) + 18);
+    ```
+
+## SWITCH STATEMENT <a name="switch-statement"></a>
+- ```switch``` statement is used to select one of many code blocks to be executed.
+- ```switch``` statement is similar to ```if else``` statement.
+- ```switch``` statement is used when we have a lot of ```else if``` statements evaluating the same expression.
+
+    ```javascript
+        const day = "monday";
+
+        switch (day) {
+            case "monday":
+                console.log("Plan course structure");
+                console.log("Go to coding meetup");
+                break;
+            case "tuesday":
+                console.log("Prepare theory videos");
+                break;
+                
+            default:
+                console.log("Not a valid day!");
+        }
+    ```
+    - ```switch``` statement will evaluate the expression ```day``` and compare it to the cases. If the expression matches the case, the code block will be executed.
+    - ```break``` statement is used to exit the ```switch``` statement.
+    - ```default``` statement is used when none of the cases match the expression.
+
+## STATEMENTS AND EXPRESSIONS <a name="statements-expressions"></a>
+
+- ```Expression``` is a piece of code that produces a value.
+    - ```3 + 4```
+    - ```1991```
+    - ```true && false && !false```
+
+- ```Statement``` is a bigger piece of code that is executed and which does not produce a value on itself.
+    - 
+    ```javascript
+    if (23 > 10) {
+        const str = "23 is bigger";
+    }
+
+    while (x === 23) {
+        // do something
+    }
+    ```
+    - ```if else``` statement is a statement as it does not produce a value.
+    - ```while``` loop is a statement as it does not produce a value.
+    - You cannot add statements in string like ```console.log(if (23 > 10) { const str = "23 is bigger"; })```
+
+    ### CONDITIONAL (TERNARY) OPERATOR <a name="conditional-operator"></a>
+    - ```Conditional (ternary) operator``` is a short hand version of ```if else``` statement.
+    - ```condition ? if true : if false```
+    - It is an expression as it produces a value. so we store it in a variable.
+    - Example:
+        ```javascript
+        const age = 23;
+        age >= 18 ? console.log("I like to drink wine") : console.log("I like to drink water");
+        ``` 
