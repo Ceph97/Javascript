@@ -151,8 +151,12 @@
     - ```console.log(`${firstName} ${lastName}`);``` will also print ```John Doe```.
 
 - They can also used with multi line strings.
-    - let str = `This is a 
-    multi line string`;
+    - 
+    ```javascript
+    let str = `This is a 
+    multi line string
+    As you can see`;
+    ```
    
     - ```console.log(str);``` will print ```This is a 
     multi line string```.
