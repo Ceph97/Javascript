@@ -81,6 +81,10 @@
     - ```const```: is used to declare a constant variable, meaning it cannot be reassigned.
         - ```const``` is also block scoped.
         - It always has to be initialized with a value. ```const num;``` is not allowed. ```const num = 3;``` is allowed.
+        - Only primitive data types are immutable. Objects and arrays are mutable.
+        - ```const``` does not mean the value is constant, it means the variable is constant.
+        - Values can be changed in an array or object declared with ```const```.
+
 
     - ```var```: is used to declare a variable, but it is function scoped, meaning it is available anywhere within the function it is declared in.
         - ```var``` is not recommended because it can be reassigned and it is function scoped.
