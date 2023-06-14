@@ -20,6 +20,8 @@
         - [Netsed Loops](#nested-loops)
     - [While Loop](#while-loop)
 
+- [SECTION 3: Dev setup, nodeJS etc](readme3.md)
+
 ## STRICT MODE <a name=strict-mode></a>
 - Strict mode is a way to introduce better error-checking into your code.
 - Strict mode makes it easier to write "secure" JavaScript.

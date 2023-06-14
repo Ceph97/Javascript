@@ -16,7 +16,8 @@
 - [PROMPT](#prompt)
 - [SWITCH STATEMENTS](#switch-statements)
 - [STATEMENTS AND EXPRESSIONS](#statements-expressions)
-- [CLICK HERE TO GO TO THE NEXT SECTION 2 (FUNCTIONS etc..)](readme2.md)
+- [CLICK HERE TO GO TO THE NEXT SECTION 2 (FUNCTIONS, LOOPS etc..)](readme2.md)
+- [DOM AND EVENT MANIPULATION](#readme3.md)
 
 
 
