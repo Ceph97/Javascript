@@ -2,6 +2,11 @@
 
 
 #  1. [Introduction](#introduction)
+#  2. [Selecting Elements](#selecting-elements-by-id)
+#  3. [What is the DOM?](#what-is-the-dom)
+#  4. [Handling Events](#handling-events)
+#  5. [Setting input field value](#setting-input-field-value)
+#  6. [Manipulating CSS classes](#manipulating-css-classes)
 
 
 
@@ -49,3 +54,61 @@
     ```
 
     - The first argument is the name of the event, and the second argument is the function that should be called when the event occurs.
+
+
+### Setting input field value <a name="setting-input-field-value"></a> [↩](#toc)
+
+- We can set the value of an input field using the `value` property.
+
+```javascript
+const input = document.querySelector('input');
+input.value = 'Hello world';
+```
+- The `value` property is a string, so it can be set to any string value.
+
+- We can also get the value of an input field using the `value` property.
+
+```javascript
+const input = document.querySelector('input');
+console.log(input.value);
+```
+
+- Do not save values inside the DOM. Save them in a variable instead using `let` or `const`. This way, you can use the value in multiple places without having to select the element again.
+
+```javascript
+const input = document.querySelector('input');
+const value = input.value;
+console.log(value);
+```
+
+### Manipulating CSS classes <a name="manipulating-css-classes"></a> [↩](#toc)
+
+- To change styles, we can add or remove CSS classes from elements.
+- These are just inlines styles, so they will override any styles set in a stylesheet.
+    ## STEPS:
+    - You need to select the element you want to change the class of.
+
+    ```javascript
+    const element = document.querySelector('p');
+    ```
+
+    - Then you need to use ```.style``` to access the element's styles. Then the property you want to change.
+
+    ```javascript
+    element.style.color = 'red';
+    ```
+
+    - This will change the color of the element to red.
+    ```javascript
+    document.querySelector('p').style.color = 'red';
+    ```
+
+    - You can also add or remove classes from an element using the `classList` property.
+
+    ```javascript
+    const element = document.querySelector('p');
+    element.classList.add('error');
+    element.classList.remove('error');
+    ```
+
+
