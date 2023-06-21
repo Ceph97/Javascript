@@ -7,6 +7,8 @@
 #  4. [Handling Events](#handling-events)
 #  5. [Setting input field value](#setting-input-field-value)
 #  6. [Manipulating CSS classes](#manipulating-css-classes)
+#  7. [Manipulating classes](#manipulating-classes)
+
 
 
 
@@ -112,3 +114,67 @@ console.log(value);
     ```
 
 
+# Manipulating classes <a name="manipulating-classes"></a> [↩](#toc)
+
+- We can add or remove classes from an element using the `classList` property.
+
+```javascript
+const element = document.querySelector(<class name>);
+```
+- ClassList is an object that contains methods for adding, removing, and toggling classes.
+    - Many of these methods take a class name as an argument.
+    - We can remove a class from an element using the `remove` method.
+    - We can toggle a class on an element using the `toggle` method.
+    - We can check if an element has a class using the `contains` method.
+
+
+    - Adding a class `add` to your element.
+
+        ```javascript
+        element.classList.add('error');
+        ```
+    - Removing a class `remove` from your element.
+
+        ```javascript
+        element.classList.remove('error');
+        ```
+    - Toggling a class `toggle` on your element.
+
+        ```javascript
+        element.classList.toggle('error');
+        ```
+    - Checking if an element has a class `contains`.
+
+        ```javascript
+        element.classList.contains('error');
+        ```
+    
+    - Do not use ```.className``` in classList methods as you would in querySelector. Only pass in the classname as a string.
+
+  
+  # Handling Keyboard Events <a name="handling-keyboard-events"></a> [↩](#toc)
+  - These are events that occur when a user presses a key on their keyboard.
+  - These are also called global events because they occur on the entire page, not just a single element.
+
+  - 3 types of keyboard events:
+    - `keydown`: occurs when a key is pressed down.
+    - `keyup`: occurs when a key is released.
+    - `keypress`: occurs when a key is pressed down and released.
+
+    - We can listen for keyboard events on the `document` object.
+    
+        ```javascript
+        document.addEventListener('keydown', function() {
+            console.log('Key pressed');
+        });
+        ```
+    - The first argument is the name of the event, and the second argument is the function that should be called when the event occurs.
+    - This covers all keys on the keyboard, including letters, numbers, and special characters.
+    - We can use the `key` property to get the name of the key that was pressed. we addend the `event` parameter to the function, and then we can access the `key` property on the event object. The argument name can be anything, but `event` is the most common.
+        
+        ```javascript
+        document.addEventListener('keydown', function(event) {
+            console.log(event);
+            console.log(event.key);
+        });
+        ```
