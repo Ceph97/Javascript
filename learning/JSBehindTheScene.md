@@ -89,7 +89,7 @@
             - Special variable that is created for every execution context. It points to the object that is executing the current function.
             - Arrow functions do not get their own this keyword. They use the this keyword of the parent execution context.
 
-    - TYPES OF EXECUTION CONTEXT
+    - #### TYPES OF EXECUTION CONTEXT
 
         - ```Global execution context(Top level code)``` executes global code, and functions are executed inside the function execution context.
             - Global execution context is created when the JS engine starts up.
@@ -100,3 +100,34 @@
             - Function execution context is created when the function is called.
             - Function execution context is destroyed when the function returns.
             - Every time a function is called, a new function execution context is created.
+
+## SCOPE AND THE SCOPE CHAIN
+
+- ```SCOPPING``` is how our program's variables are organized and accessed.
+
+- ```SCOPE``` is the part of the program in which a certain variable is accessible/declared.
+    1. Global scope:
+        - Variables declared outside of any function or block.
+        - Variables declared in global scope are accessible everywhere.
+    2. Function scope:
+        - Variables declared inside a function.
+        - Variables declared in function scope are only accessible inside the function.
+    3. Block scope:
+        - Variables declared inside a block.
+        - Variables declared in block scope are only accessible inside the block.
+        - Example of block scope: if, for, while, switch, etc.
+        - Only let and const variables are block scoped. var variables are function scoped.
+
+- ```SCOPE CHAIN``` is the order in which functions are written in the code. The scope chain determines the order in which the functions are executed.
+    - Inner scope can access variables of outer scope, but outer scope cannot access variables of inner scope.
+    - Inner scope will do a scope lookup to find the variable in the outer scope.
+    - If the variable is not found in the outer scope, the scope lookup will continue until the variable is found or the global scope is reached.
+
+
+- ```LEXICAL SCOPE``` means that a variable defined outside a function can be accessible inside another function defined after the variable declaration.
+
+- ```SCOPE OF A VARIABLE``` is the region of our code where a certain variable can be accessed.
+
+- ```SCOPE CHAIN VS CALL STACK```
+    - Scope chain is used to look up variables.
+    - Call stack is used to keep track of the execution of our code.
