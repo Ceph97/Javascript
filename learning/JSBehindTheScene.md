@@ -1,12 +1,16 @@
 # JAVASCRIPT BEHIND THE SCENE
 
 ## HIGH LEVEL OVERVIEW
+
+- JS is a single threaded, synchronous language.
 - JS is a high level, object oriented, multi-paradigm programming language.
 - High level: Abstraction from the machine.
    - Garbage collection (automatic memory management)
 
 
 ## JS ENGINE AND RUNTIME
+
+- JS is a single threaded, synchronous language.
 - JS Engine: Program that executes JS code. e.g. V8 engine (Chrome, Opera), SpiderMonkey (Firefox), Chakra (Edge), etc.
  - JS Engine has 2 main components:
    - Memory Heap: Memory allocation happens here.
@@ -78,6 +82,7 @@
     - NodeJS does not have web APIs. It has C++ bindings and thread pool instead.
 
 ## EXECUTION CONTEXT AND THE CALL STACK
+
 - EXECUTION CONTEXT
     - A wrapper to help manage the code that is running.
     - It consists of:
@@ -131,3 +136,61 @@
 - ```SCOPE CHAIN VS CALL STACK```
     - Scope chain is used to look up variables.
     - Call stack is used to keep track of the execution of our code.
+
+
+## HOISTING AND THE TDZ
+
+- ```HOISTING``` Makes some types of variables accessible/usable in the code before they are actually declared. "Variables lifted to the top of their scope."
+    - Before execution, code is scanned for variable declarations, and for each variable, a new property is created in the variable environment object.
+
+    ||HOISTED|INITIALIZED VALUE|SCOPE|
+    |---|---|---|---|
+    | function declarations | Yes | Actual Function | Block |
+    | var variables |Yes| undefined | Function | 
+    | let and const | No | uninitialized, TDZ| Block |
+    | function expressions | | Depends if you're using var or let/const | N/A |
+
+    - ```TDZ(Temporal Dead Zone)``` is a zone where we cannot access a variable before it is declared.
+         - For example, we cannot access a let or const variable before it is declared.
+             ```javascript
+                const myName = 'Jonas';
+
+                if (myName === 'Jonas') {
+                    console.log(`Jonas is a ${job}`);
+                    console.log(`My name is ${myName}`);
+                    const age = 2037 - 1989; // age is in the TDZ, therefore, it cannot be accessed before it is declared.
+                    console.log(age);
+                }
+             ```
+
+    - ```HOISTING IN PRACTICE```
+        - Don't use a variable before it is declared.
+        - Declare all variables at the top of every scope.
+        - Declare all functions before using them.
+        - Declare all variables using const or let, avoid var.
+
+
+## THIS KEYWORD
+- ```THIS KEYWORD``` is a special variable that is created for every execution context. It points to the object that is executing the current function.
+    - ```THIS KEYWORD IN PRACTICE```
+        - Method: this = <Object that is calling the method> 
+            - Example:
+                ```javascript
+                    const jonas = {
+                        name: 'Jonas',
+                        year: 1991,
+                        calcAge: function() {
+                            console.log(this);
+                            console.log(2037 - this.year); // this = jonas, therefore, this.year = jonas.year = 1991
+                        }
+                    };
+                    jonas.calcAge(); // this = jonas
+                ```
+        - Simple function call: this = undefined (in strict mode), this = global object (in non-strict mode)
+            - Always use strict mode.
+        - Arrow functions: this = <this of surrounding function (lexical this) AKA parent function>
+        - Event listener: this = <DOM element that the handler is attached to>
+        - new, call, apply, bind: this = <specified object>
+
+
+
