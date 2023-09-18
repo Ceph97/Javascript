@@ -191,6 +191,78 @@
         - Arrow functions: this = <this of surrounding function (lexical this) AKA parent function>
         - Event listener: this = <DOM element that the handler is attached to>
         - new, call, apply, bind: this = <specified object>
+        - ### RULES OF THE THIS KEYWORD
+            1. Method: this = <Object that is calling the method> 
+            2. Simple function call: this = undefined (in strict mode), this = global object (in non-strict mode)
+            3. Arrow functions: this = <this of surrounding function (lexical this) AKA parent function>
+            4. Event listener: this = <DOM element that the handler is attached to>
+            5. new, call, apply, bind: this = <specified object>
+
+## REGULAR FUNCTIONS VS ARROW FUNCTIONS
+
+- ```REGULAR FUNCTIONS``` can have a this keyword, but arrow functions cannot have a this keyword.
+- ```ARROW FUNCTIONS``` 
+    - use the this keyword of the parent function. 
+    - Hence, arrow functions are lexically scoped.
+    - Arrow functions do not get their own this keyword.
+    - Arrow functions are not ideal for methods. Never use arrow functions as methods. Because they can possibly get global scope value of this keyword.
+
+## PRIMITIVES VS OBJECTS
+- Objects are stored in the heap, and primitives are stored in the call stack.
+
+    - ```PRIMITIVES```
+        - Number
+        - String
+        - Boolean
+        - Undefined
+        - Null
+        - Symbol
+        - BigInt
+
+
+        - #### EXPLANATION:
+            - When we access a primitive value, we access the actual memory address of the value.
+            - When we copy a primitive value, we create a new copy of the value. hence, the 2 variables are completely independent of each other. Changing one variable does not affect the other variable.
+            - This is because call stack addresses are immutable.
+
+    - ```OBJECTS```
+        - Object literal
+        - Arrays
+        - Functions
+        - Many more...
+
+        - #### EXPLANATION:
+            - When we create an obkect, we create a new memory address in stack, and the value of that will be a reference to a memory address in the heap. Instead of storing the object in the stack, we store the reference to the object in the stack.
+            - This is because objects are too big to be stored in the stack.
+            - Changing one variable will affect the other variable because they are pointing to the same memory address in the heap.
+            - Const variables can be mutated if they are objects. Because we are not actually changing the value of reference in stack, we are changing the value of the object in the heap.
+            - To prevent mutation, we can use Object.assign() method for a shallow copy.
+            - For a deep copy, we can use a library like lodash.
+            - Example:
+                ```javascript
+                    const me = {
+                        name: 'Jonas',
+                        age: 30
+                    };
+
+                    const friend = me;
+                    friend.age = 27;
+                    console.log('Friend:', friend); // Friend: {name: "Jonas", age: 27}
+                    console.log('Me:', me); // Me: {name: "Jonas", age: 27}
+                ```
+
+                ```javascript
+                    // copying objects, shallow copy
+                    const me = {
+                        name: 'Jonas',
+                        age: 30
+                    };
+                    const meCopy = Object.assign({}, me); // {name: "Jonas", age: 30}
+                    meCopy.age = 27;
+                    console.log('Friend:', meCopy); // Friend: {name: "Jonas", age: 27}
+                ```
+
+
 
 
 
