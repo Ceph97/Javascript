@@ -1,8 +1,8 @@
 'use strict';
 
 // code: line separator
-const lineSeparator = function(){
-  console.log('--------------------------------------------');
+const lineSeparator = function(heading = 'heading'){
+  console.log(`--------------------${heading}------------------------`);
 };
 
 // Data needed for a later exercise
@@ -83,9 +83,73 @@ console.log(x, y, z); // 2 3 4
 
 
 
-lineSeparator();
+lineSeparator('Spread Operator');
 // 2) COMMENT: SPREAD OPERATOR
 const names = 'Jonas';
 const letters = [...names, ' ', 'S.'];
 console.log(letters); // ["J", "o", "n", "a", "s", " ", "S."]
 console.log(...letters); // J o n a s   S.
+
+console.log(...'Jonas'); // J o n a s
+
+lineSeparator('Rest Operator');
+// 1) Destructuring
+const arr = [1, 2, ...[3, 4]];
+console.log(arr); // (4) [1, 2, 3, 4]
+// 2) Functions
+const [a, b, ...others] = [1, 2, 3, 4, 5];
+console.log(a, b, others); // 1 2 (3) [3, 4, 5]
+
+lineSeparator('Rest Operator from the restaurant example');
+//mainMenu: ['Pizza', 'Pasta', 'Risotto'],
+// starterMenu: ['Focaccia', 'Bruschetta', 'Garlic Bread', 'Caprese Salad'],
+
+
+
+const [pizza, , risotto, ...otherFood] = [...restaurant.mainMenu, ...restaurant.starterMenu];
+console.log(pizza, risotto, otherFood); // Pizza Risotto (6) ["Focaccia", "Bruschetta", "Garlic Bread", "Caprese Salad", "Gnocci", "Cabonara"]
+
+
+lineSeparator('Rest Operator in Objects');
+// Objects
+const {sat, ...weekdays} = restaurant.openingHours;
+console.log(weekdays); // {thu: {…}, fri: {…}}
+
+
+lineSeparator('Rest Operator in Functions');
+// Functions
+const add = function(...numbers){
+  let sum = 0;
+  for(let i = 0; i < numbers.length; i++){
+    sum += numbers[i];
+  }
+  console.log(sum);
+};
+
+add(2); // 5
+
+lineSeparator('Short Circuiting');
+
+// || operator
+console.log(3 || 'Jonas'); // 3
+console.log('' || 'Jonas'); // Jonas
+console.log(true || 0); // true
+console.log(undefined || null); // null
+
+console.log(undefined || 0 || '' || 'Hello' || 23 || null); // Hello
+
+lineSeparator('Short circutting real world example');
+// restaurant.numGuests = 0;
+restaurant.numGuests = 23;
+
+// restaurant.numGuests = 23;
+const guests1 = restaurant.numGuests ? restaurant.numGuests : 10;
+console.log(guests1); // 10
+
+// Short circuiting
+const guests2 = restaurant.numGuests || 10;
+console.log(guests2); // 10
+
+lineSeparator('AND operator');
+console.log(0 && 'Jonas'); // 0
+console.log(7 && 'Jonas'); // Jonas
