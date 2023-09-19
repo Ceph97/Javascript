@@ -228,6 +228,112 @@
             const guestCorrect = restaurant.numGuests ?? 10;
             console.log(guestCorrect); // 0
             ```
+- ## LOGICAL ASSIGNMENT OPERATORS
+    - ### OR (||)
+       - We use to assign a value to a variable if the variable is falsy
+       - We use ```||``` to use logical assignment operator
+
+       ```javascript
+         restaurant.numGuests = 0;
+         const guests = restaurant.numGuests || 10;
+         console.log(guests); // 10
+        ```
 
 
 
+- ## for-of Loop
+    - We use for-of loop to loop over an array
+    - We use ```for-of``` to use for-of loop
+
+        ```javascript
+        const menu = [...restaurant.starterMenu, ...restaurant.mainMenu];
+
+        for (const item of menu) console.log(item);
+        ```
+    - We can use continue and break statements in for-of loop
+
+        ```javascript
+        for (const item of menu) {
+          if (item === "Pizza") continue;
+          console.log(item);
+        }
+
+        for (const item of menu) {
+          if (item === "Pizza") break;
+          console.log(item);
+        }
+        ``` 
+    - We can also get the index of the array using entries method
+
+        ```javascript
+        for (const item of menu.entries()) {
+          console.log(`${item[0] + 1}: ${item[1]}`);
+        }
+        // i = index, el = element
+        for (const [i, el] of menu.entries()) {
+          console.log(`${i + 1}: ${el}`);
+        }
+        ```
+    - You can destructure the array in the for-of loop
+
+        ```javascript
+        for (const [i, el] of menu.entries()) {
+          console.log(`${i + 1}: ${el}`);
+        }
+        ```
+
+- ## ENHANCED OBJECT LITERALS
+    - method: function
+    - We can add methods to objects without using the function keyword
+
+    - We can add properties to objects without using the colon and value
+
+    - We can compute property names
+
+        ```javascript
+        const weekdays = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+
+        const openingHours = {
+          [weekdays[3]]: {
+            open: 12,
+            close: 22,
+          },
+          [weekdays[4]]: {
+            open: 11,
+            close: 23,
+          },
+          [`day-${2 + 4}`]: {
+            open: 0, // Open 24 hours
+            close: 24,
+          },
+        };
+        ```
+    
+- ## OPTIONAL CHAINING
+    - We use optional chaining to check if a property exists in an object
+    - We use ```?.``` to use optional chaining
+    - It will return undefined if the property does not exist
+    - It will not throw an error if the property does not exist
+
+        ```javascript
+        if (restaurant.openingHours && restaurant.openingHours.mon) console.log(restaurant.openingHours.mon.open);
+        // 12
+
+        // With optional chaining
+        console.log(restaurant.openingHours.mon?.open); // 12
+        console.log(restaurant.openingHours?.mon?.open); // 12
+
+        // Example
+        const days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+
+        for (const day of days) {
+          const open = restaurant.openingHours[day]?.open ?? "closed";
+          console.log(`On ${day}, we open at ${open}`);
+        }
+
+        // Methods
+        console.log(restaurant.order?.(0, 1) ?? "Method does not exist"); // ["Focaccia", "Bruschetta"]
+        console.log(restaurant.orderRisotto?.(0, 1) ?? "Method does not exist"); // Method does not exist
+
+        // Arrays
+        const users = [{ name: "Jonas", email: "
