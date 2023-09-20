@@ -335,5 +335,162 @@
         console.log(restaurant.order?.(0, 1) ?? "Method does not exist"); // ["Focaccia", "Bruschetta"]
         console.log(restaurant.orderRisotto?.(0, 1) ?? "Method does not exist"); // Method does not exist
 
-        // Arrays
-        const users = [{ name: "Jonas", email: "
+  
+- Looping Objects: Object Keys, Values, and Entries
+    - ### Object Keys
+        - We use ```Object.keys()``` to loop over the keys of an object
+        - We use ```Object.values()``` to loop over the values of an object
+        - We use ```Object.entries()``` to loop over the keys and values of an object
+
+        ```javascript
+        // Property NAMES
+        const properties = Object.keys(openingHours);
+        console.log(properties); // (3) ["thu", "fri", "sat"]
+
+        let openStr = `We are open on ${properties.length} days: `;
+        for (const day of properties) {
+          openStr += `${day}, `;
+        }
+        console.log(openStr); // We are open on 3 days: thu, fri, sat,
+
+        // Property VALUES
+        const values = Object.values(openingHours);
+        console.log(values); // (3) [{…}, {…}, {…}]
+
+        // Entire object
+        const entries = Object.entries(openingHours);
+        console.log(entries); // (3) [Array(2), Array(2), Array(2)]
+
+        // [key, value]
+        for (const [key, { open, close }] of entries) {
+          console.log(`On ${key} we open at ${open} and close at ${close}`);
+        }
+        ```
+
+- ## SETS
+    - We use sets to create a collection of unique values
+    - We use ```new Set()``` to create a new set
+    - We pass an iterable to the set, most commonly an array
+    - You cannot get data out of a set by using an index
+    - We use set to remove duplicate values from an array so we cannot replace an array with a set
+
+    ```javascript
+    const ordersSet = new Set(["Pasta", "Pizza", "Pizza", "Risotto", "Pasta", "Pizza"]);
+    console.log(ordersSet); // Set(3) {"Pasta", "Pizza", "Risotto"}
+
+    //size
+    console.log(ordersSet.size); // 3
+
+    //add element
+    ordersSet.add("Garlic Bread");
+
+    //delete element
+    ordersSet.delete("Risotto");
+
+    //clear set
+    ordersSet.clear();
+    ```
+
+ 
+- ## MAPS
+
+    - We use maps to map values to keys, similar to dictionaries in python
+    - We use ```new Map()``` to create a new map
+    - We use ```map.set(key,value)``` to add a new key-value pair to the map
+    - We use ```map.get(key)``` to retrieve the value of a key
+    - We use ```map.has(key)``` to check if a map has a certain key
+    - We use ```map.delete(key)``` to delete a key-value pair from the map, however it is safer to use ```map.clear()``` to clear the map.
+
+        ```javascript
+        const rest = new Map();
+
+        // adding elements
+        rest.set("name", "Classico Italian");
+        rest.set(1, "Firenze, Italy");
+
+        // Getting elements
+        console.log(rest.get("name")); // Classico Italian
+
+        // Chaining
+        rest
+        .set("categories", ["Italian", "Pizzeria", "Vegetarian", "Organic"])
+        .set("open", 11)
+        .set("close", 23)
+        .set(true, "We are open :D")
+        .set(false, "We are closed :(");
+
+
+        // Checking if a map has a certain key
+            console.log(rest.has("categories")); // true
+        ```
+
+    - Another wat to create a map is to pass an array of arrays to the map constructor
+
+        ```javascript
+        // 1st element is the key, 2nd element is the value
+        const question = new Map([
+        ["question", "What is the best programming language in the world?"],
+        [1, "C"],
+        [2, "Java"],
+        [3, "JavaScript"],
+        ["correct", 3],
+        [true, "Correct 🎉"],
+        [false, "Try again!"],
+        ]);
+        ```
+    - Looping is the same as an object
+
+    - convert object to map
+
+        ```javascript
+        const hoursMap = new Map(Object.entries(openingHours));
+        console.log(hoursMap); // Map(3) {"thu" => {…}, "fri" => {…}, "sat" => {…}}
+        ```
+    
+    - convert map to array
+
+        ```javascript
+        console.log([...question]); // (7) [Array(2), Array(2), Array(2), Array(2), Array(2), Array(2), Array(2)]
+        ```
+    - ### WHEN TO USE MAPS, SETS, OBJECTS, OR ARRAYS 
+        - Use maps over objects when you need keys that are not strings
+            - Maps are also easier to iterate over
+        - Use objects when you need to include functions (methods)
+            - Objects are also easier to write and access
+        - Use sets to remove duplicate values from arrays
+            - Sets are faster than arrays when it comes to checking if an element exists
+        - Use arrays when you need ordered data
+
+- ## STRINGS
+    - strings are primitive values
+
+    - We can index strings
+    - We can get the length of a string
+    - We can get the index of a character in a string
+    - We can get a substring of a string using ```slice()``` and passing the start and end index of the substring
+        - If we don't pass the end index, it will go to the end of the string
+        - If we pass a negative index, it will start from the end of the string
+    - We can get the index of the last character in a string using ```lastIndexOf()```
+    - We can get the index of the first occurrence of a character in a string using ```indexOf()```
+
+    - We can convert a string to uppercase using ```toUpperCase()```
+    - We can convert a string to lowercase using ```toLowerCase()```
+    - We can check if a string includes a certain character using ```includes()``` and returns a boolean.
+    - We can check if a string starts with a certain character using ```startsWith()```. 
+        - Returns true or false
+    - We can check if a string ends with a certain character using ```endsWith()```
+        - Returns true or false
+    - We can check if a string is a part of another string using ```split()```
+        - You can pass a separator to split the string
+        - It returns an array
+    - ```trim()``` removes whitespace from the beginning and end of a string
+    - ```replace()``` replaces a part of a string with another string. 
+        - It only replaces the first occurrence of the string
+        - To replace all occurrences of a string, we need to use regular expressions
+        ```javascript
+        const announcement = "All passengers come to boarding door 23. Boarding door 23!";
+        console.log(announcement.replace("door", "gate")); // All passengers come to boarding gate 23. Boarding door 23!
+        ```
+    - ```replaceAll()``` replaces all occurrences of a string with another string, however it is not supported in all browsers
+    - ```padStart()``` adds a certain number of characters to the beginning of a string
+
