@@ -483,6 +483,20 @@
     - We can check if a string is a part of another string using ```split()```
         - You can pass a separator to split the string
         - It returns an array
+            ```javascript
+            console.log("a+very+nice+string".split("+")); // (4) ["a", "very", "nice", "string"]
+
+            // Destructuring
+            const [firstName, lastName] = "Jonas Schmedtmann".split(" ");
+            ```
+            
+    - We can join an array into a string using ```join()```
+        - You can pass a separator to join the string
+        - It returns a string
+            ```javascript
+            const newName = ["Mr.", firstName, lastName.toUpperCase()].join(" ");
+            console.log(newName); // Mr. Jonas SCHMEDTMANN
+            ```
     - ```trim()``` removes whitespace from the beginning and end of a string
     - ```replace()``` replaces a part of a string with another string. 
         - It only replaces the first occurrence of the string
@@ -493,4 +507,33 @@
         ```
     - ```replaceAll()``` replaces all occurrences of a string with another string, however it is not supported in all browsers
     - ```padStart()``` adds a certain number of characters to the beginning of a string
+        - You can pass the number of characters to add and the character to add
+        - It returns a string
+            ```javascript
+            const message = "Go to gate 23!";
+            console.log(message.padStart(25, "+")); // +++++++++Go to gate 23!
+            ```
+    - ```padEnd()``` adds a certain number of characters to the end of a string
+        - You can pass the number of characters to add and the character to add
+        - It returns a string
+            ```javascript
+            const message = "Go to gate 23!";
+            console.log(message.padEnd(25, "+")); // Go to gate 23!++++++++++
+            ```
+    - ```repeat()``` repeats a string a certain number of times
+        - You can pass the number of times to repeat the string
+        - It returns a string
+            ```javascript
+            const message2 = "Bad weather... All departures delayed... ";
+            console.log(message2.repeat(5));
+            ```
+    - Masking a credit card number
+        ```javascript
+        const maskCreditCard = function (number) {
+          const str = number + "";
+          const last = str.slice(-4);
+          return last.padStart(str.length, "*");
+        };
+        console.log(maskCreditCard(43378463864647384)); // ************7384
+        ```
 
