@@ -1,5 +1,53 @@
 'use strict';
 
+function head(heading) {
+  console.log(`/////////////////////////////////////////////////
+            \n////${heading}////
+            \n/////////////////////////////////////////////////`);
+}
+
+// For Loop
+head('For Loop')
+const jonas = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+for (const i of jonas) {
+  if (i % 2 === 0) {
+    console.log(`Even number: ${i}`);
+  }else{
+    console.log(`Odd number: ${i}`);
+  }
+}
+// For each
+function oddEven(i) {
+  if (i % 2 === 0) {
+    console.log(`Even number: ${i}`);
+  }else{
+    console.log(`Odd number: ${i}`);
+  }};
+
+head('For Each');
+jonas.forEach(oddEven);
+
+// For Each with Map
+head('For Each with Map');
+const currencies2 = new Map([
+  ['USD', 'United States dollar'],
+  ['EUR', 'Euro'],
+  ['GBP', 'Pound sterling'],
+]);
+currencies2.forEach(function (value, key, map) {
+  console.log(`${key}: ${value}`);
+});
+
+// For Each with Set
+head('For Each with Set');
+const currenciesUnique = new Set(['USD', 'GBP', 'USD', 'EUR', 'EUR']);
+console.log(currenciesUnique);
+currenciesUnique.forEach(function (value, _ , map) {
+  console.log(`${value}: ${value}`);
+});
+
+
+
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // BANKIST APP
