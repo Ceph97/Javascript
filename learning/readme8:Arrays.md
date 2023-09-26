@@ -130,3 +130,73 @@ currenciesUnique.forEach(function (value, _, map) {
   console.log(`${value}: ${value}`);
 });
 ```
+
+## MAP, FILTER, REDUCE METHODS FOR ARRAYS
+- ```map``` :
+    - returns a new array containing the results of applying an operation on all original array elements
+    - Similar to ```forEach``` but it returns a new array
+    - It does not mutate the original array
+    - It can can access current element, index, and the array itself.
+    - Supports chaining
+        - ```arr.map().filter().reduce()``` 
+
+    ```javascript
+    // Example 1:
+    let arr = [1, 2, 3, 4, 5];
+    console.log(arr.map((element) => element * 2)); // [2, 4, 6, 8, 10]
+    console.log(arr); // [1, 2, 3, 4, 5]
+
+    // Example 2:
+    const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+
+    const eurToUsd = 1.1;
+    const movementsUSD = movements.map(function (mov) {
+      return mov * eurToUsd;
+    });
+    console.log(movements);
+    console.log(movementsUSD);
+    ```
+  
+- ```filter```:
+    - returns a new array containing the array elements that passed a specified test condition
+    - It does not mutate the original array
+
+    ```javascript
+    // Example 1:
+    let arr = [1, 2, 3, 4, 5];
+    console.log(arr.filter((element) => element % 2 === 0)); // [2, 4]
+    console.log(arr); // [1, 2, 3, 4, 5]
+
+    // Example 2:
+    const deposits = movements.filter(function (mov) {
+      return mov > 0;
+    });
+    ```
+
+- ```reduce``` 
+    - Might be the most powerful array method there is; With it, we can implement any array transformation.
+    - returns a single value which is the accumulated result of iterating through the array
+    - It does not mutate the original array
+    - It can can access current element, index, and the array itself.
+    - It takes the following arguments: ```the accumulator, the current element, the current index, and the array itself```
+        - The accumulator is like a snowball that keeps growing as it rolls down the hill
+        - The accumulator is the value that we ultimately want to return
+        - For each iteration, we can update the accumulator, and then return it at the end of the iteration
+        - An incrementing counter is a good example of using reduce
+
+    ```javascript
+    // Example 1:
+    let arr = [1, 2, 3, 4, 5];
+    console.log(arr.reduce((accumulator, element) => accumulator + element)); // 15
+    console.log(arr); // [1, 2, 3, 4, 5]
+
+    // Example 2: Get the maximum value
+    const max = movements.reduce(function (acc, mov) {
+      if (acc > mov) {
+        return acc;
+      } else {
+        return mov;
+      }
+    }, movements[0]); // The second argument is the initial value of the accumulator which is the first element in the array
+    ```
+

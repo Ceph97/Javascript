@@ -1,5 +1,5 @@
 'use strict';
-
+/*
 function head(heading) {
   console.log(`/////////////////////////////////////////////////
             \n////${heading}////
@@ -46,7 +46,7 @@ currenciesUnique.forEach(function (value, _ , map) {
   console.log(`${value}: ${value}`);
 });
 
-
+*/
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
@@ -108,6 +108,87 @@ const inputTransferAmount = document.querySelector('.form__input--amount');
 const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
+
+/////////////////////////////////////////////////
+///////   Functions    /////////////////////////
+/////////////////////////////////////////////////
+
+// Display Movements
+/**
+ * @param {Array} movements
+ * This function will display the movements of the user
+ * This will be like account activity
+ */
+const displayMovements = function (movements) {
+
+  //Clearing the movements container
+  containerMovements.innerHTML = '';
+
+  movements.forEach(function (mov, i) {
+
+    //Deposit or Withdrawal
+    const type = mov > 0 ? 'deposit' : 'withdrawal';
+
+    //Movement row
+    const html = `
+    <div class="movements__row">
+      <div class="movements__type movements__type--${type}">(${i + 1}). ${type}</div>
+      <div class="movements__value">${mov}</div>
+    </div>`;
+
+    //Inserting the row to the movements container
+    /**
+     * We are using insertAdjacentHTML because we want to insert the html
+     * as a child of the containerMovements
+     */
+    containerMovements.insertAdjacentHTML('afterbegin', html);
+  });
+};
+displayMovements(account1.movements);
+
+/////////////////////////////////////////////////
+// COMPUTING USER NAMES
+/////////////////////////////////////////////////
+/**
+ * @param {Array} accounts
+ * This function will compute the user names based on the account owner
+ * This will be used to display the user name in the UI
+ */
+const createUserNames = function (accounts) {
+  accounts.forEach(function (account) {
+    //creating the user name field in the account object
+    account.userName = account.owner
+      .toLowerCase()
+      .split(' ')
+      .map(function (name) {
+        //taking the first letter of the name
+        return name[0];
+      })
+      //joining the first letters of the name to form the user name
+      .join('');
+  });
+}
+createUserNames(accounts);
+
+/////////////////////////////////////////////////
+// COMPUTING BALANCE
+/////////////////////////////////////////////////
+/**
+ * @param {Array} movements
+ * This function will compute the balance of the user
+ * This will be used to display the balance in the UI
+ * We will use reduce method to compute the balance
+ */
+
+const calcDisplayBalance = function (movements) {
+  const balance = movements.reduce(function (acc, cur) {
+    return acc + cur;
+  }, 0); //0 is the initial value of the accumulator
+
+  //displaying the balance in the UI
+  labelBalance.textContent = `€${balance}`;
+}
+calcDisplayBalance(account1.movements);
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
