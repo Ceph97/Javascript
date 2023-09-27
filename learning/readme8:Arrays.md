@@ -200,3 +200,51 @@ currenciesUnique.forEach(function (value, _, map) {
     }, movements[0]); // The second argument is the initial value of the accumulator which is the first element in the array
     ```
 
+
+## CHAINING METHODS
+- ```map```, ```filter```, and ```reduce``` can be chained together
+- The order of the methods matters
+- ```map``` and ```filter``` return a new array so they can be chained together
+- ```reduce``` returns a single value so it cannot be chained before ```map``` or ```filter``` because they expect an array as an argument
+- ```reduce``` can be chained after ```map``` or ```filter``` because they return an array
+- We should not chain too many methods together because it can make the code hard to read and debug
+
+```javascript
+// Example 1:
+const eurToUsd = 1.1;
+const totalDepositsUSD = movements
+  .filter((mov) => mov > 0)
+  .map((mov) => mov * eurToUsd)
+  .reduce((acc, mov) => acc + mov, 0);
+
+console.log(totalDepositsUSD);
+
+// Example 2: To debug
+const eurToUsd = 1.1;
+const totalDepositsUSD = movements
+  .filter((mov) => mov > 0)
+  .map((mov) => mov * eurToUsd)
+  .reduce((acc, mov) => {
+    console.log(acc);
+    return acc + mov;
+  }, 0);
+```
+
+## FIND METHOD
+- returns the first element in the array that satisfies a specified condition
+- It does not mutate the original array
+- It can can access current element, index, and the array itself.
+- It takes the following arguments: ```the current element, the current index, and the array itself```
+- It only returns an element not an array
+
+```javascript
+// Example 1:
+let arr = [1, 2, 3, 4, 5];
+console.log(arr.find((element) => element % 2 === 0)); // 2
+console.log(arr); // [1, 2, 3, 4, 5]
+
+// Example 2:
+const firstWithdrawal = movements.find((mov) => mov < 0);
+console.log(movements);
+console.log(firstWithdrawal);
+```

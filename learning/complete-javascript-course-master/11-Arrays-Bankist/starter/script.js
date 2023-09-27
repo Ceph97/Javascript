@@ -55,7 +55,7 @@ currenciesUnique.forEach(function (value, _ , map) {
 // Data
 const account1 = {
   owner: 'Jonas Schmedtmann',
-  movements: [200, 450, -400, 3000, -650, -130, 70, 1300],
+  movements: [200, 450, -400, 3000, -650, -130, 70, 1300000],
   interestRate: 1.2, // %
   pin: 1111,
 };
@@ -144,7 +144,6 @@ const displayMovements = function (movements) {
     containerMovements.insertAdjacentHTML('afterbegin', html);
   });
 };
-displayMovements(account1.movements);
 
 /////////////////////////////////////////////////
 // COMPUTING USER NAMES
@@ -180,15 +179,173 @@ createUserNames(accounts);
  * We will use reduce method to compute the balance
  */
 
-const calcDisplayBalance = function (movements) {
-  const balance = movements.reduce(function (acc, cur) {
+const calcDisplayBalance = function (account) {
+  const balance = account.movements.reduce(function (acc, cur) {
     return acc + cur;
   }, 0); //0 is the initial value of the accumulator
+
+  //adding the balance to the account object for future use
+  account.balance = balance;
 
   //displaying the balance in the UI
   labelBalance.textContent = `€${balance}`;
 }
-calcDisplayBalance(account1.movements);
+
+
+/////////////////////////////////////////////////
+// COMPUTING SUMMARY DEBIT, CREDIT AND INTEREST
+/////////////////////////////////////////////////
+/**
+ * @param {Array} movements
+ * This function will compute the summary of the user
+ * This will be used to display the summary in the UI
+ * We will use reduce method to compute the summary
+ * We are chaining the filter and map method to compute the interest
+ */
+
+const calcDisplaySummary = function (account) {
+
+  //computing the credit
+  const incomes = account.movements
+    .filter(function (mov) {
+      return mov > 0;
+    })
+    .reduce(function (acc, cur) {
+      return acc + cur;
+    }, 0);
+  //displaying the summary in the UI
+  labelSumIn.textContent = `€${incomes}`;
+  
+  //computing the debit
+  const out = account.movements
+    .filter(function (mov) {
+      return mov < 0;
+    })
+    .reduce(function (acc, cur) {
+      return acc + cur;
+    }, 0);
+  //displaying the summary in the UI
+  labelSumOut.textContent = `€${Math.abs(out)}`;
+
+  //computing the interest
+  const interest = account.movements
+    .filter(function (mov) {
+      return mov > 0;
+    })
+    .map(function (deposit) {
+      return deposit * account.interestRate / 100;
+    })
+    //filtering the interest greater than 1
+    .filter(function (int, i, arr) {
+      return int >= 1;
+    })
+    .reduce(function (acc, int) {
+      return acc + int;
+    }, 0);
+  labelSumInterest.textContent = `€${interest}`;
+}
+
+
+/////////////////////////////////////////////////
+// LOGIN FUNCTIONALITY
+/////////////////////////////////////////////////
+
+
+//Creating a global variable to store the current account
+let currentAccount;
+
+//Event Handler
+btnLogin.addEventListener('click', function (e) {
+  //Preventing the form from submitting as it defalt HTML behaviour
+  e.preventDefault();
+
+  //Getting the user name
+  const userName = inputLoginUsername.value;
+
+  //Getting the pin
+  const pin = Number(inputLoginPin.value);
+
+  //Checking if the user name is present in the accounts array
+  currentAccount = accounts.find(function (acc) {
+    return acc.userName === userName;
+  });
+
+  //Checking if the pin is correct
+  // ?. is optional chaining operator 
+  // It will not check the pin if the currentAccount is undefined
+  if (currentAccount?.pin === pin) {
+    //Displaying the UI and welcome message
+    labelWelcome.textContent = `Welcome back, ${currentAccount.owner.split(' ')[0]}`;
+    // Changing the opacity of the UI to 100 to be visible
+    containerApp.style.opacity = 100;
+
+    //Clearing the input fields and removing the focus
+    inputLoginUsername.value = inputLoginPin.value = '';
+    inputLoginPin.blur();
+
+    //Updating the UI
+    updateUI(currentAccount);
+  }
+});
+
+/////////////////////////////////////////////////
+// TRANSFER FUNCTIONALITY
+/////////////////////////////////////////////////
+/**
+ * @param {Object} account
+ * This function will transfer the amount from one account to another
+ * 
+ */
+
+//Event Handler
+btnTransfer.addEventListener('click', function (e) {
+  //Preventing the form from submitting as it defalt HTML behaviour
+  e.preventDefault();
+
+  //Getting the amount
+  const amount = Number(inputTransferAmount.value);
+
+  //Getting the user name
+  const receiverAccount = accounts.find(function (acc) {
+    return acc.userName === inputTransferTo.value;
+  });
+
+  //Clearing the input fields and removing the focus
+  inputTransferAmount.value = inputTransferTo.value = '';
+  inputTransferAmount.blur();
+
+  //Checking if the amount is greater than 0 and the current account has enough balance
+  if (amount > 0 
+      && receiverAccount //Checking if the receiver account is present
+      && currentAccount.balance >= amount //Checking if the current account has enough balance
+      && receiverAccount?.userName !== currentAccount.userName //Checking if the receiver account is not the current account
+      ) {
+    
+    //Doing the transfer
+    currentAccount.movements.push(-amount); // subtracting the amount from the current account
+    receiverAccount.movements.push(amount); // adding the amount to the receiver account
+
+    //Updating the UI
+    updateUI(currentAccount);
+  }
+});
+
+/////////////////////////////////////////////////
+// UPDATE UI
+/////////////////////////////////////////////////
+
+const updateUI = function (account) {
+  //Displaying the movements
+  displayMovements(account.movements);
+
+  //Displaying the balance
+  calcDisplayBalance(account);
+
+  //Displaying the summary
+  calcDisplaySummary(account);
+}
+
+
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
