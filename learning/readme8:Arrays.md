@@ -235,6 +235,10 @@ const totalDepositsUSD = movements
 - It does not mutate the original array
 - It can can access current element, index, and the array itself.
 - It takes the following arguments: ```the current element, the current index, and the array itself```
+- You can also add a callback function as a second argument
+    - The callback function takes three arguments: ```the current element, the current index, and the array itself```
+    - The callback function is optional
+    - If the callback function is not provided, the find method will return the first element that is not undefined
 - It only returns an element not an array
 
 ```javascript
@@ -247,4 +251,9 @@ console.log(arr); // [1, 2, 3, 4, 5]
 const firstWithdrawal = movements.find((mov) => mov < 0);
 console.log(movements);
 console.log(firstWithdrawal);
+
+// With callback function
+const index = movements.findIndex(function (mov) {
+  return mov < 0;
+});
 ```

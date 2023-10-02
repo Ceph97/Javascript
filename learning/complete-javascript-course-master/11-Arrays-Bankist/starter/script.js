@@ -331,6 +331,40 @@ btnTransfer.addEventListener('click', function (e) {
 });
 
 /////////////////////////////////////////////////
+// CLOSE ACCOUNT FUNCTIONALITY
+/////////////////////////////////////////////////
+/**
+ * @param {Object} account
+ * This function will close the account
+ * We will use findIndex method to find the index of the account
+ * 
+ */
+btnClose.addEventListener('click', function (e) {
+  e.preventDefault();
+
+  //Getting the user name
+  if (inputCloseUsername.value === currentAccount.userName
+    && Number(inputClosePin.value) === currentAccount.pin) {
+
+    //Finding the index of the account
+    const index = accounts.findIndex(function (acc) {
+      return acc.userName === currentAccount.userName;
+    });
+
+    //Deleting the account
+    accounts.splice(index, 1);
+
+    //Hiding the UI
+    containerApp.style.opacity = 0;
+  }else{
+    alert(`user name or pin are incorrect\n
+    Please try again !!!`);
+
+  }
+
+});
+
+/////////////////////////////////////////////////
 // UPDATE UI
 /////////////////////////////////////////////////
 
