@@ -257,3 +257,154 @@ const index = movements.findIndex(function (mov) {
   return mov < 0;
 });
 ```
+
+## SOME AND EVERY METHODS
+- ```some```:
+    - returns true if at least one element in the array satisfies a specified condition
+    - It does not mutate the original array
+    - It can can access current element, index, and the array itself.
+    - It takes the following arguments: ```the current element, the current index, and the array itself```
+    - It returns a boolean value
+    - It is similar to ```includes``` but it is more flexible because it uses a callback function
+    - It is useful for checking if a certain condition is met by at least one element in the array
+
+
+    ```javascript
+    // Example 1:
+    let arr = [1, 2, 3, 4, 5];
+    console.log(arr.some((element) => element % 2 === 0)); // true
+    console.log(arr); // [1, 2, 3, 4, 5]
+
+    // Example 2:
+    console.log(movements);
+    console.log(movements.includes(-130));
+
+    // With callback function
+    const anyDeposits = movements.some((mov) => mov > 0);
+    console.log(anyDeposits);
+    ```
+
+- ```every```:
+    - returns true if all elements in the array satisfy a specified condition
+    - It does not mutate the original array
+    - It can can access current ```element, index, and the array itself```.
+    
+    ```javascript
+    // Example 1:
+    let arr = [1, 2, 3, 4, 5];
+    console.log(arr.every((element) => element % 2 === 0)); // false
+    ```
+    - It is useful for checking if a certain condition is met by all elements in the array
+
+
+## FLAT AND FLATMAP METHODS
+- ```flat```:
+    - creates a new array with all sub-array elements concatenated into it recursively up to the specified depth
+    - It does not mutate the original array
+    - It takes a depth argument which is optional, the default value is 1
+    - It is useful for flattening nested arrays
+    - It is useful for removing empty elements from an array
+
+    ```javascript
+    // Example 1:
+    const arr = [[1, 2, 3], [4, 5, 6], 7, 8];
+    console.log(arr.flat()); // [1, 2, 3, 4, 5, 6, 7, 8]
+
+    // Example 2:
+    const arrDeep = [[[1, 2], 3], [4, [5, 6]], 7, 8];
+    console.log(arrDeep.flat()); // [Array(2), 3, 4, Array(2), 7, 8]
+
+    // Example 3: with depth argument
+    console.log(arrDeep.flat(2)); // [1, 2, 3, 4, 5, 6, 7, 8]
+    ```
+
+- ```flatMap```:
+    - maps each element using a mapping function, then flattens the result into a new array
+    - It does not mutate the original array
+    - It is useful for combining ```map``` and ```flat``` methods
+    - It is useful for removing empty elements from an array
+
+    ```javascript
+    // Example 1:
+    const arr = [[1, 2, 3], [4, 5, 6], 7, 8];
+    console.log(arr.flatMap((element) => element * 2)); // [2, 4, 6, 8, 10, 12, 14, 16]
+
+    // Example 2:
+    const arrDeep = [[[1, 2], 3], [4, [5, 6]], 7, 8];
+    console.log(arrDeep.flatMap((element) => element * 2)); // [2, 4, 6, 8, NaN, 14, 16]
+    ```
+    - ```flatMap``` only goes one level deep and it does not take a depth argument
+
+
+## SORT METHOD
+- sorts the elements of an array in place and returns the sorted array
+- It mutates the original array
+- It sorts the elements as strings by default
+
+```javascript
+// Example 1:
+let arr = [1, 2, 3, 4, 5];
+console.log(arr.sort()); // [1, 2, 3, 4, 5]
+console.log(arr); // [1, 2, 3, 4, 5]
+
+// Example 2: with strings
+const owners = ['Jonas', 'Zach', 'Adam', 'Martha'];
+console.log(owners.sort()); // ['Adam', 'Jonas', 'Martha', 'Zach']
+
+// Example 3: with numbers
+console.log(movements);
+console.log(movements.sort()); // [-130, -400, -650, 1300, 200, 3000, 450, 70]
+
+// Example 4: with numbers ASCENDING(A,B)
+movements.sort((a, b) => {
+  if (a > b) {
+    return 1;
+  }
+  if (a < b) {
+    return -1;
+  }
+});
+
+// Example 5: with numbers DESCENDING(B,A)
+movements.sort((a, b) => {
+  if (a > b) {
+    return -1;
+  }
+  if (a < b) {
+    return 1;
+  }
+});
+
+```
+## ARRAY GENERATION METHOD
+- ```Array.fill()```
+    - changes all elements in an array to a static value, from a start index (default 0) to an end index (default array.length)
+    - It mutates the original array
+    - It takes the following arguments: ```the value to fill the array with, the start index, and the end index```
+    - It is useful for filling an array with a certain value
+
+    ```javascript
+    // Example 1:
+    let arr = new Array(5);
+    arr.fill(1); // [1, 1, 1, 1, 1]
+    console.log(arr);
+    ```
+    
+- ```Array.from()```
+    - creates a new, shallow-copied Array instance from an array-like or iterable object
+    - It does not mutate the original array
+    - It takes the following arguments: ```the array-like or iterable object, a map function, and an optional this argument```
+
+    ```javascript
+    // Example 1:
+    const arr = Array.from({ length: 7 }, () => 1);
+    console.log(arr); // [1, 1, 1, 1, 1, 1, 1]
+
+    // Example 2:
+    const arr2 = Array.from({ length: 7 }, (_, i) => i + 1);
+    console.log(arr2); // [1, 2, 3, 4, 5, 6, 7]
+
+    // Example 3:
+    const arr3 = Array.from({ length: 7 }, (_, i) => Math.trunc(Math.random() * 6) + 1);
+    console.log(arr3); // [1, 2, 3, 4, 5, 6, 7]
+    ```

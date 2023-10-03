@@ -119,12 +119,17 @@ const inputClosePin = document.querySelector('.form__input--pin');
  * This function will display the movements of the user
  * This will be like account activity
  */
-const displayMovements = function (movements) {
+const displayMovements = function (movements, sort = false) {
 
   //Clearing the movements container
   containerMovements.innerHTML = '';
 
-  movements.forEach(function (mov, i) {
+  //Sorting the movements
+  const movs = sort ? movements //if sort is true then sort the movements
+  .slice() //creating a shallow copy of the movements array
+  .sort((a, b) => a - b) : movements; //AB = ascending order, BA = descending order
+
+  movs.forEach(function (mov, i) {
 
     //Deposit or Withdrawal
     const type = mov > 0 ? 'deposit' : 'withdrawal';
@@ -331,6 +336,37 @@ btnTransfer.addEventListener('click', function (e) {
 });
 
 /////////////////////////////////////////////////
+// LOAN FUNCTIONALITY
+/////////////////////////////////////////////////
+/**
+ * 
+ * @param {Object} account
+ * This function will give the loan to the user
+ * We are using some method to check if any of the movement is greater than 0
+ * /
+*/
+btnLoan.addEventListener('click', function (e) {
+  e.preventDefault();
+
+  //Getting the amount
+  const amount = Number(inputLoanAmount.value);
+
+  //Checking if the amount is greater than 0 and any of the movement is greater than 0
+  if (amount > 0 && currentAccount.movements.some(function (mov) {
+    return mov >= amount * 0.1;
+  })) {
+    //Adding the movement
+    currentAccount.movements.push(amount);
+
+    //Updating the UI
+    updateUI(currentAccount);
+  }
+  //Clearing the input fields and removing the focus
+  inputLoanAmount.value = '';
+});
+
+
+/////////////////////////////////////////////////
 // CLOSE ACCOUNT FUNCTIONALITY
 /////////////////////////////////////////////////
 /**
@@ -365,6 +401,26 @@ btnClose.addEventListener('click', function (e) {
 });
 
 /////////////////////////////////////////////////
+// SORT FUNCTIONALITY
+/////////////////////////////////////////////////
+/**
+ * @param {Array} movements
+ * This function will sort the movements
+ * We will use sort method to sort the movements
+ * Will Set the sorted to true to sort the movements
+ */
+let sorted = false; //initially the movements are not sorted
+btnSort.addEventListener('click', function (e) {
+  e.preventDefault();
+
+  //Updating the UI
+  displayMovements(currentAccount.movements, !sorted); //if sorted is true then sort the movements
+  sorted = !sorted; //if sorted is true then set it to false and vice versa
+
+});
+
+
+/////////////////////////////////////////////////
 // UPDATE UI
 /////////////////////////////////////////////////
 
@@ -385,11 +441,7 @@ const updateUI = function (account) {
 /////////////////////////////////////////////////
 // LECTURES
 
-const currencies = new Map([
-  ['USD', 'United States dollar'],
-  ['EUR', 'Euro'],
-  ['GBP', 'Pound sterling'],
-]);
+ 
 
 const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
