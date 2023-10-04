@@ -1,4 +1,4 @@
-# Arrays
+# ARRAYS
 
 ## ARRAY METHODS
 

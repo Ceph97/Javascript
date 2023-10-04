@@ -81,20 +81,24 @@ const inputClosePin = document.querySelector('.form__input--pin');
 /////////////////////////////////////////////////
 // Functions
 
-const displayMovements = function (movements, sort = false) {
+const displayMovements = function (account, sort = false) {
   containerMovements.innerHTML = '';
 
-  const movs = sort ? movements.slice().sort((a, b) => a - b) : movements;
+  const movs = sort ? account.movements.slice().sort((a, b) => a - b) : account.movements;
 
   movs.forEach(function (mov, i) {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
+
+    //format date
+    const displayDate = new Date(account.movementsDates[i]);
 
     const html = `
       <div class="movements__row">
         <div class="movements__type movements__type--${type}">${
       i + 1
     } ${type}</div>
-        <div class="movements__value">${mov}€</div>
+        <div class="movements__date">${displayDate}</div>
+        <div class="movements__value">${mov.toFixed(2)}€</div>
       </div>
     `;
 
@@ -104,19 +108,19 @@ const displayMovements = function (movements, sort = false) {
 
 const calcDisplayBalance = function (acc) {
   acc.balance = acc.movements.reduce((acc, mov) => acc + mov, 0);
-  labelBalance.textContent = `${acc.balance}€`;
+  labelBalance.textContent = `${acc.balance.toFixed(2)}€`;
 };
 
 const calcDisplaySummary = function (acc) {
   const incomes = acc.movements
     .filter(mov => mov > 0)
     .reduce((acc, mov) => acc + mov, 0);
-  labelSumIn.textContent = `${incomes}€`;
+  labelSumIn.textContent = `${incomes.toFixed(2)}€`;
 
   const out = acc.movements
     .filter(mov => mov < 0)
     .reduce((acc, mov) => acc + mov, 0);
-  labelSumOut.textContent = `${Math.abs(out)}€`;
+  labelSumOut.textContent = `${Math.abs(out).toFixed(2)}€`;
 
   const interest = acc.movements
     .filter(mov => mov > 0)
@@ -126,7 +130,7 @@ const calcDisplaySummary = function (acc) {
       return int >= 1;
     })
     .reduce((acc, int) => acc + int, 0);
-  labelSumInterest.textContent = `${interest}€`;
+  labelSumInterest.textContent = `${interest.toFixed(2)}€`;
 };
 
 const createUsernames = function (accs) {
@@ -142,7 +146,7 @@ createUsernames(accounts);
 
 const updateUI = function (acc) {
   // Display movements
-  displayMovements(acc.movements);
+  displayMovements(acc);
 
   // Display balance
   calcDisplayBalance(acc);
@@ -153,7 +157,26 @@ const updateUI = function (acc) {
 
 ///////////////////////////////////////
 // Event handlers
-let currentAccount;
+let currentAccount, timer;
+
+//fake always logged in
+currentAccount = account1;
+updateUI(currentAccount);
+containerApp.style.opacity = 100;
+
+// Add dates to movements
+const now = new Date();
+//Get day, month, year, hours, minutes, seconds
+const day = `${now.getDate()}`.padStart(2, 0);
+const month = `${now.getMonth() + 1}`.padStart(2, 0);
+const year = now.getFullYear();
+const hour = `${now.getHours()}`.padStart(2, 0);
+const min = `${now.getMinutes()}`.padStart(2, 0);
+
+labelDate.textContent = `${day}/${month}/${year}, ${hour}:${min}`;
+
+
+
 
 btnLogin.addEventListener('click', function (e) {
   // Prevent form from submitting
@@ -174,6 +197,11 @@ btnLogin.addEventListener('click', function (e) {
     // Clear input fields
     inputLoginUsername.value = inputLoginPin.value = '';
     inputLoginPin.blur();
+
+
+    //timer
+    if (timer) clearInterval(timer);
+    startLogoutTimer();
 
     // Update UI
     updateUI(currentAccount);
@@ -200,13 +228,21 @@ btnTransfer.addEventListener('click', function (e) {
 
     // Update UI
     updateUI(currentAccount);
+
+    //reset timer
+    clearInterval(timer);
+    timer = startLogoutTimer();
   }
 });
+
+/////////////////////////////////////////////////
+// LOAN
+/////////////////////////////////////////////////
 
 btnLoan.addEventListener('click', function (e) {
   e.preventDefault();
 
-  const amount = Number(inputLoanAmount.value);
+  const amount = Math.floor(inputLoanAmount.value);
 
   if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
     // Add movement
@@ -214,6 +250,11 @@ btnLoan.addEventListener('click', function (e) {
 
     // Update UI
     updateUI(currentAccount);
+
+    //reset timer
+    clearInterval(timer);
+    timer = startLogoutTimer();
+
   }
   inputLoanAmount.value = '';
 });
@@ -251,3 +292,48 @@ btnSort.addEventListener('click', function (e) {
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // LECTURES
+/////////////////////////////////////////////////
+
+/////////////////////////////////////////////////
+// LABELING
+/////////////////////////////////////////////////
+/**
+ * Label each second row of movements with a different color
+ */
+labelBalance.addEventListener('click', function () {
+  [...document.querySelectorAll('.movements__row')].forEach(function (row, i) {
+    if (i % 2 === 0) {
+      row.style.backgroundColor = 'orangered';
+    }
+
+    if (i % 3 === 0) {
+      row.style.backgroundColor = 'blue';
+    }
+  })
+});
+
+/////////////////////////////////////////////////
+// LOG OUT TIMER
+/////////////////////////////////////////////////
+
+const startLogoutTimer = function() {
+  // set time to 5 minutes
+  let time = 10;
+
+  // Call the timer every second
+  const timer = setInterval(function (){
+      // In each call, print the remaining time to UI
+      labelTimer.textContent = `${String(Math.trunc(time / 60)).padStart(2,0)}:${String(Math.trunc(time % 60)).padStart(2,0)}`
+      // In each call, print the remaining time to UI
+      time--;
+      // When 0 seconds, stop timer and logout user
+      if (time === 0) {
+        clearInterval(timer);
+        labelWelcome.textContent = `Log in to get started`;
+        containerApp.style.opacity = 0;
+      }
+  }, 1000)
+  //we are returning the timer so we can use it outside of this function
+  // To avoid altenating the timer betwe`en the two accounts
+  return timer;
+};
