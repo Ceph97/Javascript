@@ -94,8 +94,8 @@ document
   const section1 = document.querySelector('#section--1'); // section 1
 
   btnScrollTo.addEventListener('click', function(e) {
-    //getBoundingClientRect() returns the size of an element and its position relative to the viewport
-    const s1coords = section1.getBoundingClientRect();
+    // //getBoundingClientRect() returns the size of an element and its position relative to the viewport
+    // const s1coords = section1.getBoundingClientRect();
 
     // console.log(s1coords);
 
@@ -117,6 +117,81 @@ document
      
     // });
 
-    // // new way
+    // new way
     section1.scrollIntoView({ behavior: 'smooth' });
   });
+
+  /////////////////////////////////////////////////////
+  // Page navigation
+  /////////////////////////////////////////////////////
+  document.querySelectorAll('.nav__link').forEach(function(el) {
+    el.addEventListener('click', function(e) {
+      e.preventDefault();
+      const id = this.getAttribute('href');
+      document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+///////////////////////////////////////////////
+// Event Delegation
+///////////////////////////////////////////////
+
+
+  // using a common parent element to handle events
+  // 1. Add event listener to common parent element
+  // 2. Determine what element originated the event
+
+  document.querySelector('.nav__links')
+  .addEventListener('click', function(e) {
+    e.preventDefault();
+
+
+
+    // matching strategy to check if 
+    //the element clicked contains the class nav__link
+    if(e.target.classList.contains('nav__link')) {
+      const id = e.target.getAttribute('href');
+      document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
+    }
+  });
+
+
+
+  /////////////////////////////////////////////////////
+  // EVENT HANDLERS
+  /////////////////////////////////////////////////////
+
+  // const h1 = document.querySelector('h1');
+
+  // // mouseenter event
+  // h1.addEventListener('mouseenter', function(e) {
+  //   alert('addEventListener: Great! You are reading the heading :D');
+  // });
+
+  /////////////////////////////////////////////////
+  // Event propagation / Event Bubbling
+  /////////////////////////////////////////////////
+
+  // rgb(255, 255, 255)
+
+/*  const randomInt = (min, max) => 
+    Math.floor(Math.random() * (max - min + 1) + min);
+
+  const randomColor = () => 
+    `rgb(${randomInt(0, 255)}, ${randomInt(0, 255)}, ${randomInt(0, 255)})`;
+
+document.querySelector('.nav__link').addEventListener('click', function(e) {
+  this.style.backgroundColor = randomColor();
+  console.log('LINK', e.target, e.currentTarget);
+});
+
+document.querySelector('.nav__links').addEventListener('click', function(e) {
+  this.style.backgroundColor = randomColor();
+  console.log('CONTAINER', e.target, e.currentTarget);
+});
+
+document.querySelector('.nav').addEventListener('click', function(e) {
+  this.style.backgroundColor = randomColor();
+  console.log('NAV', e.target, e.currentTarget);
+});
+*/

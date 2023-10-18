@@ -253,3 +253,161 @@
     ```
 
 
+## EVENTS TYPES AND EVENT HANDLERS
+- Signals that something has happened on the webpage.
+- We can react to events by using event handlers.
+- How to listen for events:
+    - Inline event handlers:
+        - Inline html event handlers are not recommended.
+        ```javascript
+        <button onclick="alert('Hello World!')">Click me!</button>
+
+        //onmouseenter
+        h1.onmouseenter = function(e) {
+            alert('Hello World!');
+        }
+        ```
+    - Traditional event handlers
+        ```javascript
+        const btn = document.querySelector('.btn--close-cookie');
+        btn.onclick = function() {
+            alert('Hello World!');
+        }
+        ```
+    - Modern event handlers
+        - Preferred method of adding event handlers, allows us to add multiple event handlers to the same element.
+        ```javascript
+        const btn = document.querySelector('.btn--close-cookie');
+        btn.addEventListener('click', function() {
+            alert('Hello World!');
+        });
+
+        //multiple event handlers
+        btn.addEventListener('click', function() {
+            alert('Hello World!');
+        });
+
+        const alertH1 = function() {
+            alert('Hello World!');
+        }
+
+        btn.addEventListener('click', alertH1);
+
+        //remove event handler
+        btn.removeEventListener('click', alertH1);
+
+        // Add event handler to multiple elements afer timeout
+        btn.addEventListener('click', alertH1);
+
+
+        ```
+    - Event listeners
+        ```javascript
+        const btn = document.querySelector('.btn--close-cookie');
+        btn.addEventListener('click', function() {
+            alert('Hello World!');
+        });
+        ```
+    
+    ### EVENT PROPAGATION: BUBBLING AND CAPTURING
+    - Event propagation is the process of an event bubbling up through the DOM tree.
+    - Event propagation has 3 phases:
+        - Capturing phase
+            - The event is captured on the root element.
+            - The event goes down to the target element down the DOM tree passing through all the parent elements.
+            - By default, event handlers are not attached to the capturing phase. but you can attach them using ```addEventListener()``` and passing in a third argument ```true```.
+        - Target phase
+            - The event reaches the target element.
+            - The actual event are handled in this phase.
+        - Bubbling phase
+            - The event bubbles up from the target element up the DOM tree passing through all the parent elements until it reaches the root element.
+            - When an event bubbles up, it triggers all the event handlers on the parent elements as if the event was triggered on the parent element.
+            - For example, if we have a button inside a div, and we click on the button, the event will bubble up to the div and trigger the event handler on the div as if the event was triggered on the div.
+            - To prevent the event from bubbling up, we can use ```e.stopPropagation()```.
+                - This will prevent the event from bubbling up to the parent elements.
+                - Its not recommended to use ```e.stopPropagation()``` because it makes the code harder to maintain.
+            - To check which element triggered the event, we can use ```e.target```.
+            - To check which element the event handler is attached to, we can use ```e.currentTarget```. The currentTarget is the original element on which the event handler is attached to.
+
+    - EXAMPLE:
+        ```javascript
+        //HTML
+        <div class="nav">
+            <ul class="nav__links">
+                <li><a href="#">Link 1</a></li>
+                <li><a href="#">Link 2</a></li>
+                <li><a href="#">Link 3</a></li>
+            </ul>
+        </div>
+        
+        //JS
+
+        // Generate random color
+        const randomInt = (min, max) => 
+            Math.floor(Math.random() * (max - min + 1) + min);
+
+        const randomColor = () => 
+            `rgb(${randomInt(0, 255)}, ${randomInt(0, 255)}, ${randomInt(0, 255)})`;
+
+        // Event propagation: Bubbling and capturing
+        document.querySelector('.nav__link').addEventListener('click', function(e) {
+        this.style.backgroundColor = randomColor();
+        console.log('LINK', e.target, e.currentTarget);
+        });
+
+        document.querySelector('.nav__links').addEventListener('click', function(e) {
+        this.style.backgroundColor = randomColor();
+        console.log('CONTAINER', e.target, e.currentTarget);
+        });
+
+        document.querySelector('.nav').addEventListener('click', function(e) {
+        this.style.backgroundColor = randomColor();
+        console.log('NAV', e.target, e.currentTarget);
+        });
+        ```
+    ### EVENT DELEGATION
+    - Event delegation is the process of attaching an event handler to a parent element and waiting for the event to bubble up to the parent element.
+    - For example in a Nav bar, we can attach an event handler to the common parent element and wait for the event to bubble up to then we can determine where the event happen by using ```e.target```.
+    - This is efficient way of adding event handlers to multiple elements. instead of adding event handlers to each element, we can add one event handler to the parent element.
+    - This is useful when we have an element with lots of child elements that we want to add event handlers to.
+    - It is not recommended to use event delegation when we have an element with lots of child elements that we don't want to add event handlers to.
+    - Also not recommended to use event delegation when we have an element with lots of child elements that we want to add event handlers to but we want to add different event handlers to each element.
+
+    - We can also use event delegation to add event handlers to elements that are not yet in the DOM. For example elements that are dynamically added to the DOM during runtime.
+        - As we know, event handlers are not attached to elements that are not yet in the DOM.
+
+        ```javascript
+        //HTML
+        <div class="nav">
+            <ul class="nav__links">
+                <li><a href="#">Link 1</a></li>
+                <li><a href="#">Link 2</a></li>
+                <li><a href="#">Link 3</a></li>
+            </ul>
+        </div>
+
+        //JS
+        //calling event for each element
+        //this is not efficient
+          document.querySelectorAll('.nav__link').forEach(function(el){
+                el.addEventListener('click', function(e) {
+                e.preventDefault();
+                const id = this.getAttribute('href');
+                document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
+                });
+            });
+
+        //USING EVENT DELEGATION
+            // using a common parent element to handle events
+            // 1. Add event listener to common parent element
+            // 2. Determine what element originated the event
+        document.querySelector('.nav__links').addEventListener('click', function(e) {
+            e.preventDefault();
+            // matching strategy to check if 
+            //the element clicked contains the class nav__link
+            if(e.target.classList.contains('nav__link')) {
+            const id = e.target.getAttribute('href');
+            document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+        ```
