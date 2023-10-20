@@ -411,3 +411,238 @@
             }
         });
         ```
+    ### DOM TRAVERSING
+    - Moving up and down the DOM tree.
+    ```javascript
+    //DOM traversing
+    const h1 = document.querySelector('h1');
+    
+    // Going downwards: child
+    console.log(h1.querySelectorAll('.highlight'));
+    
+    console.log(h1.childNodes); // returns a node list of all the child nodes
+
+    console.log(h1.children); // returns a HTML collection of all the child elements. HTML collection is live, it updates automatically
+
+    h1.firstElementChild.style.color = 'white'; // changes the color of the first child element
+    
+    ```
+    - You can get the first and last child element using ```firstElementChild``` and ```lastElementChild```.
+    - You can get the closest parent element using ```closest()```.
+    - We can use ```parentElement``` and ```parentNode``` to get the parent element.
+    ```javascript
+    // Going upwards: parents
+    console.log(h1.parentNode); // returns the parent node
+    console.log(h1.parentElement); // returns the parent element
+    ```
+
+    - We can select sibling elements using ```nextElementSibling``` and ```previousElementSibling```.
+      - We can select sibling nodes using ```nextSibling``` and ```previousSibling```.
+      - Sibling nodes include text nodes.
+    ```javascript
+    // Going sideways: siblings
+    console.log(h1.previousElementSibling); // returns the previous sibling element
+    console.log(h1.nextElementSibling); // returns the next sibling element
+    console.log(h1.previousSibling); // returns the previous sibling node
+    console.log(h1.nextSibling); // returns the next sibling node
+    ```
+
+### BUILDING A TAB COMPONENT
+- A tab component is a component that allows us to switch between different sections of content.
+- We can use event delegation to add event handlers to the tab buttons.
+- We can use ```closest()``` to get the closest parent element.
+- We can use ```dataset``` to get the data attributes.
+- We can use ```classList``` to add and remove classes.
+- We can use ```forEach()``` to loop through a node list.
+- We can use ```addEventListener()``` to add event handlers.
+- We can use ```querySelectorAll()``` to select multiple elements.
+
+    ```javascript
+    //HTML
+    <div class="operations__tab-container">
+            <button class="btn operations__tab operations__tab--1 operations__tab--active" data-tab="1">
+                <span>01</span>Instant Transfers
+            </button>
+            <button class="btn operations__tab operations__tab--2" data-tab="2">
+                <span>02</span>Instant Loans
+            </button>
+            <button class="btn operations__tab operations__tab--3" data-tab="3">
+                <span>03</span>Instant Closing
+            </button>
+            </div>
+
+    //JS
+    // Tabbed component
+    // tabbed component
+    const tabs = document.querySelectorAll('.operations__tab');
+    const tabsContainer = document.querySelector('.operations__tab-container');
+    const tabsContent = document.querySelectorAll('.operations__content');
+
+
+    //event delegation
+    tabsContainer.addEventListener('click', function(e) {
+
+    //which element originated the event
+    const clicked = e.target.closest('.operations__tab');
+
+    // guard clause
+    if(!clicked) return;
+
+    // remove active classes to hide content
+    tabs.forEach(t => t.classList.remove('operations__tab--active'));
+    tabsContent.forEach(c => c.classList.remove('operations__content--active'));
+
+    // activate tab
+    clicked.classList.add('operations__tab--active');
+
+    // activate content area
+    document.querySelector(`.operations__content--${clicked.dataset.tab}`)
+    .classList.add('operations__content--active');
+    });
+    ```
+
+### PASSING ARGUMENTS TO EVENT HANDLERS
+
+- We can pass arguments to event handlers by using an anonymous function.
+- We will use menu fade animation as an example.
+- We can use ```bind()``` to pass arguments to event handlers.
+    - Bind returns a new function with the arguments passed in.
+    - Bind does not call the function, it only returns a new function.
+    - We will need to add the ```this``` keyword to the function to make it work.
+
+    ```javascript
+    //HTML
+    <nav class="nav">
+            <img src="img/logo.png" alt="Bankist logo" class="nav__logo" id="logo">
+            <ul class="nav__links">
+                <li class="nav__item">
+                    <!-- #section--1 are called anchors -->
+                    <a class="nav__link" href="#section--1">Features</a>
+                </li>
+                <li class="nav__item">
+                    <a class="nav__link" href="#section--2">Operations</a>
+                </li>
+                <li class="nav__item">
+                    <a class="nav__link" href="#section--3">Testimonials</a>
+                </li>
+                <li class="nav__item">
+                    <a class="nav__link nav__link--btn btn--show-modal" href="#">Open account</a>
+                </li>
+            </ul>
+        </nav>
+
+    //JS
+
+    // Handler function can only take one argument which is the event object
+    const handleHover = function(e) {
+    if(e.target.classList.contains('nav__link')) {
+        const link = e.target;
+        const siblings = link.closest('.nav').querySelectorAll('.nav__link');
+
+        const logo = link.closest('.nav').querySelector('img');
+
+        siblings.forEach(el => {
+        if(el !== link) el.style.opacity = this;
+        });
+        logo.style.opacity = this;
+    }
+    }
+
+    // passing arguments into event handlers
+    //if you want to pass multiple args to bind, you can pass them in as an array
+
+    nav.addEventListener('mouseover',handleHover.bind(0.5));
+
+    // passing arguments into event handlers
+    nav.addEventListener('mouseout', handleHover.bind(1));
+
+    ```
+
+### IMPLEMENTING A STICKY NAVIGATION: THE SCROLL EVENT
+- We can use the scroll event to implement a sticky navigation.
+- We set the position of the navigation to ```fixed``` when the scroll position is greater than the initial position of the navigation.
+- We can use ```getBoundingClientRect()``` to get the position of an element relative to the viewport.
+- We can use ```pageYOffset``` to get the scroll position.
+- We can use ```scrollY``` to get the scroll position.
+- We can use ```scrollTo()``` to scroll to a specific position.
+- We can use ```scrollIntoView()``` to scroll to a specific element.
+
+```javascript
+//JS
+// Sticky navigation
+const nav = document.querySelector('.nav');
+const initialCoords = section1.getBoundingClientRect();
+
+window.addEventListener('scroll', function() {
+  if(window.scrollY > initialCoords.top) nav.classList.add('sticky');
+  else nav.classList.remove('sticky');
+});
+```
+- Using the above method to implement a sticky navigation is not efficient because the scroll event is fired a lot of times.
+    - This can cause performance issues especially on mobile devices.
+
+### A BETTER WAY OF IMPLEMENTINS STICKY NAV: THE INTERSECTION OBSERVER API
+- The intersection observer API is a new API that allows us to observe changes to the way a target element intersects another element or the way it intersects the viewport.
+- The intersection observer API is an alternative to the scroll event.
+- The intersection observer API is more efficient than the scroll event.
+- The intersection observer API is an asynchronous API.
+- The intersection observer API is used to implement lazy loading of images.
+    - To use the intersection observer API, we need to create an observer object and pass in a callback function.
+    ```javascript
+    //JS
+    const observer = new IntersectionObserver(obsCallback, obsOptions);
+    ```
+    - ```obsCallback``` is the callback function that is called whenever the observed element intersects the target element or the viewport.
+    - ```obsOptions``` is an object that contains the options for the observer.
+
+    ```javascript
+        const section1 = document.querySelector('#section--1'); // section 1
+
+        //JS
+        const obsCallback = function(entries, observer) {
+            entries.forEach(entry => {
+                console.log(entry);
+            });
+        };
+
+
+        const obsOptions = {
+            root: null, // the element that is used as the viewport for checking visibility of the target. if null, the viewport is used
+            threshold: 0.1, // the percentage of the target element that is visible before the callback is called
+            rootMargin: '-90px', // margin around the root. values are similar to css margin property
+        };
+
+        const observer = new IntersectionObserver(obsCallback, obsOptions);
+
+        //observe the target element
+        observer.observe(section1);
+    ```
+
+    - ```entries``` is an array of entries.
+    - ```observer``` is the observer object.
+    - ```root``` is the element that is used as the viewport for checking visibility of the target. if null, the viewport is used.
+
+    - EXAMPLE:
+    ```javascript
+        const head = document.querySelector('.header');
+
+        const stivkyNav = function(entries) {
+        const [entry] = entries;
+
+        if(!entry.isIntersecting) nav.classList.add('sticky');
+        else nav.classList.remove('sticky');
+        };
+
+        const headerOberserver = new IntersectionObserver
+        (stivkyNav, {
+            root: null,
+            threshold: 0,
+            rootMargin: '-90px'
+        });
+
+        headerOberserver.observe(head);
+    ```
+
+
+
+### REVEALING ELEMENTS ON SCROLL
