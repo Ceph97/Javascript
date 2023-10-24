@@ -646,3 +646,269 @@ window.addEventListener('scroll', function() {
 
 
 ### REVEALING ELEMENTS ON SCROLL
+- We can use the intersection observer API to reveal elements on scroll.
+- We can use ```classList``` to add and remove classes.
+- Revealing elements on scroll is a common technique used in modern websites.
+- We can add a hidden class to the elements we want to reveal.
+```javascript
+
+//HTML
+<section class="section section--hidden" id="section--1">
+</section>
+
+//CSS
+.section--hidden {
+    opacity: 0;
+    transform: translateY(8rem);
+}
+
+//JS
+//The idea is to remove the hidden class when the element is intersecting the viewport
+//and add the hidden class when the element is not intersecting the viewport
+
+const allSections = document.querySelectorAll('.section');
+
+const revealSection = function(entries, observer) {
+    const [entry] = entries;
+
+    if(!entry.isIntersecting) return;
+
+    entry.target.classList.remove('section--hidden');
+    observer.unobserve(entry.target);
+};
+
+const sectionObserver = new IntersectionObserver(revealSection, {
+    root: null,
+    threshold: 0.15,
+});
+
+allSections.forEach(function(section) {
+    sectionObserver.observe(section);
+    section.classList.add('section--hidden');
+});
+```
+
+### LAZY LOADING IMAGES
+- Lazy loading images is a technique used to improve the performance of websites.
+    - Images are one of the most resource intensive elements on a webpage.
+    - Lazy loading images is a technique used to improve the performance of websites by loading images only when they are needed.
+
+```javascript
+
+
+//HTML
+//We use a placeholder image as the src attribute with a low resolution image, and we use the data-src attribute to store the high resolution image
+// As we scroll down the page, we replace the src attribute with the data-src attribute
+//lazy-img is a filter that we use to apply a blur to the image as the image is crappy
+<img
+    src="img/digital-lazy.jpg"
+    data-src="img/digital.jpg"
+    alt="Computer"
+    class="features__img lazy-img"
+/>
+
+//CSS
+.lazy-img {
+    filter: blur(20px);
+    transition: filter 0.3s;
+}
+
+//JS
+//Lazy loading images
+const imgTargets = document.querySelectorAll('img[data-src]');
+
+
+function loadImg(entries, observer) {
+  const [entry] = entries;
+
+  if(!entry.isIntersecting) return;
+
+  // replace src with data-src
+  entry.target.src = entry.target.dataset.src;
+
+  // remove blur class after image is loaded instead of using transition
+  //entry.target.classList.remove('lazy-img');
+
+  entry.target.addEventListener('load', function() {
+    entry.target.classList.remove('lazy-img');
+  });
+
+  observer.unobserve(entry.target);
+}
+
+const imgObserver = new IntersectionObserver(loadImg,{
+  root: null,
+  threshold: 0,
+  rootMargin: '200px'
+});
+
+imgTargets.forEach(img => imgObserver.observe(img));
+```
+
+
+
+
+### BUILDING A SLIDER COMPONENT: PART 1 and 2
+- A slider component is a component that allows us to switch between different slides.
+
+- We can use ```transform``` to move elements.
+   - Transform is a CSS property that allows us to move elements.
+- We can use ```transition``` to add animations to elements.
+- We can use ```translateX()``` to move elements horizontally.
+- We can use ```translateY()``` to move elements vertically.
+
+```javascript
+
+//HTML
+<div class="slider">
+    <button class="slider__btn slider__btn--left">&larr;</button>
+    <button class="slider__btn slider__btn--right">&rarr;</button>
+    <div class="slider__dots"></div>
+</div>
+
+//CSS
+.slider {
+    position: relative;
+    display: flex;
+    overflow: hidden;
+}
+
+.slider__container {
+    display: flex;
+    width: 100%;
+}
+
+.slider__slide {
+    position: relative;
+    min-width: 100%;
+    overflow: hidden;
+}
+
+
+//JS
+const slides = document.querySelectorAll('.slide');
+//buttons
+const btnLeft = document.querySelector('.slider__btn--left');
+const btnRight = document.querySelector('.slider__btn--right');
+
+let curSlide = 0; // current slide
+const maxSlide = slides.length; // total number of slides
+
+// set the slides to the right position, one after the other
+// instead of stacking them on top of each other
+const goToSlide = function(slide) {
+  slides.forEach((s, i) => {
+    s.style.transform = `translateX(${100 * (i - slide)}%)`;
+  });
+}
+goToSlide(0); // initial position is 0% "//-100%(left slide), 0%(middle), 100%(right slide)"
+
+// next slide
+const nextSlide = function() {
+  if(curSlide === maxSlide - 1) {
+    curSlide = 0; // go to the first slide after the last slide
+  } else {
+    curSlide++; //increment the current slide
+  }
+  goToSlide(curSlide);
+  activateDot(curSlide);
+}
+//next slide button event listener
+btnRight.addEventListener('click', nextSlide);
+
+// previous slide
+const prevSlide = function() {
+  if(curSlide === 0) {
+    curSlide = maxSlide - 1; // go to the last slide after the first slide
+  } else {
+    curSlide--; //decrement the current slide
+  }
+  goToSlide(curSlide);
+  activateDot(curSlide);
+}
+
+//previous slide button event listener
+btnLeft.addEventListener('click', prevSlide);
+
+// keyboard events
+document.addEventListener('keydown', function(e) {
+  if(e.key === 'ArrowLeft') prevSlide();
+  e.key === 'ArrowRight' && nextSlide(); // short circuiting way
+});
+
+// dots
+const dotContainer = document.querySelector('.dots');
+
+// create dots
+const createDots = function() {
+  slides.forEach(function(_, i) {
+    dotContainer.insertAdjacentHTML('beforeend', 
+    `<button class="dots__dot" data-slide="${i}"></button>`);
+  });
+}; createDots();
+
+// activate dots
+const activateDot = function(slide) {
+  document.querySelectorAll('.dots__dot').forEach(dot => 
+    dot.classList.remove('dots__dot--active'));
+
+  document.querySelector(`.dots__dot[data-slide="${slide}"]`)
+  .classList.add('dots__dot--active');
+}
+
+// Event listener for the dots
+dotContainer.addEventListener('click', function(e) {
+  if(e.target.classList.contains('dots__dot')) {
+    const {slide} = e.target.dataset;
+    goToSlide(slide);
+    activateDot(slide);
+  }
+});
+
+```
+
+### LIFECYCLE DOM EVENTS
+- DOM lifecycle events are events that are fired at different stages of the DOM lifecycle.
+- DOM lifecycle events are fired when the DOM is created, updated or deleted.
+- The first event that is fired is ```DOMContentLoaded.``` This event is fired when the HTML document is loaded and parsed.
+    - It does not wait for stylesheets, images and subframes to finish loading.
+    - It does not wait for the external resources to finish loading.
+    - We do not need to add an event listener to listen for this event, as we add the script tag at the end of the body tag.
+    - We can also add an event listener to listen for this event.
+    ```javascript
+    document.addEventListener('DOMContentLoaded', function(e) {
+        console.log('HTML parsed and DOM tree built!', e);
+    });
+    ```
+
+- The second event that is fired is ```load```. This event is fired when the HTML document is loaded and parsed and all the external resources are loaded.
+    - It waits for stylesheets, images and subframes to finish loading.
+    - It waits for the external resources to finish loading.
+    - We can add an event listener to listen for this event.
+    ```javascript
+    window.addEventListener('load', function(e) {
+        console.log('Page fully loaded', e);
+    });
+    ```
+
+- The third event that is fired is ```beforeunload```. This event is fired when the user tries to leave the page.
+    - We can add an event listener to listen for this event.
+    ```javascript
+    window.addEventListener('beforeunload', function(e) {
+        e.preventDefault();
+        console.log(e);
+        e.returnValue = ''; // Mesaage to display to the user but it is not supported in all browsers
+    });
+    ```
+    - We can use it to prevent the user from leaving the page. by asking the user if they are sure they want to leave the page.
+
+### EFFICIENT SCRIPT LOADING: DEFER AND ASYNC
+- Using the ```defer``` attribute on the script tag allows us to load the script after the HTML document is parsed.
+    - Use ```defer``` when you want to execute the script after the HTML document is parsed.
+    - Useful when you want to import a script that depends on another script.
+    - This is the recommended way of loading scripts.
+    ```javascript
+    <script defer src="script.js"></script>
+    ```
+- Using the ```async``` attribute on the script tag allows us to load the script asynchronously.
+- Using the regular script tag without the ```defer``` or ```async``` attribute will block the HTML document from parsing until the script is loaded.

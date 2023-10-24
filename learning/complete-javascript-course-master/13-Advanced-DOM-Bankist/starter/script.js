@@ -336,3 +336,165 @@ const headerOberserver = new IntersectionObserver
 
 headerOberserver.observe(head);
 
+/////////////////////////////////////////////////
+// Reveal sections
+/////////////////////////////////////////////////
+const allSections = document.querySelectorAll('.section');
+
+const revealSection = function(entries, observer) {
+  const [entry] = entries;
+  if(!entry.isIntersecting) return;
+  entry.target.classList.remove('section--hidden');
+  observer.unobserve(entry.target);
+};
+
+const sectionObserver = new IntersectionObserver
+(revealSection, {})
+
+allSections.forEach(function(section) {
+  sectionObserver.observe(section);
+  section.classList.add('section--hidden');
+  
+});
+
+/////////////////////////////////////////////////
+// Lazy loading images
+/////////////////////////////////////////////////
+const imgTargets = document.querySelectorAll('img[data-src]');
+
+
+function loadImg(entries, observer) {
+  const [entry] = entries;
+
+  if(!entry.isIntersecting) return;
+
+  // replace src with data-src
+  entry.target.src = entry.target.dataset.src;
+
+  // remove blur class
+  entry.target.addEventListener('load', function() {
+    entry.target.classList.remove('lazy-img');
+  });
+
+  observer.unobserve(entry.target);
+}
+
+const imgObserver = new IntersectionObserver(loadImg,{
+  root: null,
+  threshold: 0,
+  rootMargin: '200px'
+});
+
+imgTargets.forEach(img => imgObserver.observe(img));
+
+
+/////////////////////////////////////////////////
+// Slider component
+/////////////////////////////////////////////////
+
+// slider component function to avoid polluting the global namespace
+const slider = function() {
+
+  ///////////////////////////////
+  // | VARIABLES | ELEMENTS |
+  ///////////////////////////////
+  const slides = document.querySelectorAll('.slide');
+  //buttons
+  const btnLeft = document.querySelector('.slider__btn--left');
+  const btnRight = document.querySelector('.slider__btn--right');
+
+  // dots
+  const dotContainer = document.querySelector('.dots');
+
+  // variables
+  let curSlide = 0; // current slide
+  const maxSlide = slides.length; // total number of slides
+
+  // set the slides to the right position, one after the other
+  // instead of stacking them on top of each other
+  
+  ///////////////////////////////
+  // | FUNCTION DECLARATIONS |
+  ///////////////////////////////
+  //Go to slide
+  const goToSlide = function(slide) {
+    slides.forEach((s, i) => {
+      s.style.transform = `translateX(${100 * (i - slide)}%)`;
+    });
+  }
+  
+  // next slide
+  const nextSlide = function() {
+    if(curSlide === maxSlide - 1) {
+      curSlide = 0; // go to the first slide after the last slide
+    } else {
+      curSlide++; //increment the current slide
+    }
+    goToSlide(curSlide);
+    activateDot(curSlide);
+  }
+
+  // previous slide
+  const prevSlide = function() {
+    if(curSlide === 0) {
+      curSlide = maxSlide - 1; // go to the last slide after the first slide
+    } else {
+      curSlide--; //decrement the current slide
+    }
+    goToSlide(curSlide);
+    activateDot(curSlide);
+  }
+
+  // create dots
+  const createDots = function() {
+    slides.forEach(function(_, i) {
+      dotContainer.insertAdjacentHTML('beforeend', 
+      `<button class="dots__dot" data-slide="${i}"></button>`);
+    });
+  }; 
+
+  // activate dots
+  const activateDot = function(slide) {
+    document.querySelectorAll('.dots__dot').forEach(dot => 
+      dot.classList.remove('dots__dot--active'));
+
+    document.querySelector(`.dots__dot[data-slide="${slide}"]`)
+    .classList.add('dots__dot--active');
+  };
+  
+  // initialize slider
+  const init = function() {
+    goToSlide(0); // initial position is 0% "//-100%(left slide), 0%(middle), 100%(right slide)"
+    createDots(); // create dots
+    activateDot(0); // activate the first dot
+  }
+  init();
+
+
+  ///////////////////////////////
+  // | EVENT HANDLERS |
+  ///////////////////////////////
+  //next slide button event listener
+  btnRight.addEventListener('click', nextSlide);
+
+  //previous slide button event listener
+  btnLeft.addEventListener('click', prevSlide);
+
+  // keyboard events
+  document.addEventListener('keydown', function(e) {
+    if(e.key === 'ArrowLeft') prevSlide();
+    e.key === 'ArrowRight' && nextSlide(); // short circuiting way
+  });
+
+
+  // Event listener for the dots
+  dotContainer.addEventListener('click', function(e) {
+    if(e.target.classList.contains('dots__dot')) {
+      const {slide} = e.target.dataset;
+      goToSlide(slide);
+      activateDot(slide);
+    }
+  });
+
+}
+slider();
