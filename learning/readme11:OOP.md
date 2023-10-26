@@ -231,3 +231,104 @@
     - ```Object.create()```:
         - The Object.create() method creates a new object, using an existing object as the prototype of the newly created object.
         - Easiest and most straightforward way to create prototypes and objects.
+
+## PROTOTYPAL INHERITANCE
+- Inheritance is one of the core concepts of OOP.
+- Inheritance allows us to create new classes based on existing classes.
+- The new classes inherit the properties and methods of the existing classes.
+- The existing classes are called ```base``` or ```parent``` classes.
+
+    ### How does the new keyword work?
+    ```javascript
+    new Object(field_1, field_2, ...);
+    ```
+    - Creates a new empty object.
+    - ```this``` keyword points to the new empty object.
+        - Thats why we use the this keyword inside the constructor function when setting fields.
+    - The new object is linked to the prototype. (```__proto__``` property)
+    - Object.create() does not use the new keyword.
+    - If a function is not found in the object, the search moves to the object's prototype. This is called prototypal inheritance.
+    
+    ### Prototype chain
+    - The prototype chain is a series of links between objects.
+    - It is used to implement inheritance and shared properties.
+    - Every object has a prototype except the root object.
+    - The root object is the base object in the prototype chain.
+    - The root object does not have a prototype.
+    - The root object is the ```Object.prototype``` object.
+    - The ```Object.prototype``` object is the top of the prototype chain.
+    - The ```Object.prototype``` object is the base object for all objects.
+    - The ```Object.prototype``` object has a prototype of ```null```.
+    - If we don't find a property or method in an object, we look for it in the prototype of the object.
+    - To check object's prototype, we can use ```__proto__``` property. If we want to check the prototype of the prototype, we can use ```__proto__.__proto__```. This is the root object.
+
+       - console.log(jonas.__proto__); // Person.prototype
+       - console.log(jonas.__proto__.__proto__); // Object.prototype
+       - console.log(jonas.__proto__.__proto__.__proto__); // null
+
+       - We can use some object methods on the prototype chain (```__proto__``` property):
+            - ```hasOwnProperty()```
+            - ```isPrototypeOf()```
+            - ```Object.getPrototypeOf()```
+
+    ### function.prototype
+    - Every function has a prototype property.
+    - The prototype property is an object.
+    ```javascript
+    function Person() {
+        // ...
+    }
+
+    console.log(Person.prototype); // Person {}
+    ```
+
+    - Also arrays have a prototype property.
+        ```javascript
+            const arr = [1, 2, 3];
+            console.log(arr.__proto__); // Array(0) []
+        ```
+        - This contains all the array methods.
+        - With this, we can add our own methods to the array prototype. That all arrays will inherit. for example:
+        - Extending prototypes of builtin objects is not recommended because it can cause problems with other libraries.
+        
+        ```javascript
+        Array.prototype.unique = function() {
+            return [...new Set(this)];
+        };
+
+        console.log(arr.unique()); // [1, 2, 3]
+        ```
+
+    ### HTML ELEMENTS PROTOTYPE
+    - HTML elements also have a prototype.
+    - We can use the ```__proto__``` property to access the prototype of an HTML element.
+    - This is why we can use methods like ```click()``` on HTML elements because at the end of the prototype chain, there is the ```HTMLElement.prototype``` object.
+
+## ES6 CLASSES
+- ES6 classes are just syntactic sugar over constructor functions.
+- All functions added to the class are added to the prototype.
+    ```javascript
+    class Person {
+        constructor(name, birthYear) {
+            this.name = name;
+            this.birthYear = birthYear;
+        }
+
+        calcAge() {
+            return 2021 - this.birthYear;
+        }
+    }
+    ```
+- We can add new methods directly to the prototype using the ```prototype``` keyword.
+    ```javascript
+    Person.prototype.greet = function() {
+        console.log(`Hey ${this.name}`);
+    }
+    ```
+- Clases are not hoisted.
+    - We can only use them after they are declared.
+- Classes are first-class citizens.
+    - We can pass them into functions and return them from functions.
+- Classes are executed in strict mode.
+- We can only add methods to classes, not properties.
+    - Properties must be added inside the constructor function.
