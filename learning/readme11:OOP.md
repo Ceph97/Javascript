@@ -332,3 +332,95 @@
 - Classes are executed in strict mode.
 - We can only add methods to classes, not properties.
     - Properties must be added inside the constructor function.
+
+
+## SETTERS AND GETTERS
+- Getters and setters are special methods that are used to define properties.
+- They get and set the value of a property.
+    - Getters and setters are used to add an extra layer of security to our data.
+    - We can also use them to perform additional actions when getting and setting values.
+- We do not need to use getters and setters, but they are useful in some cases.
+
+    ```javascript
+    class Person {
+        constructor(fullname, birthYear) {
+            this.fullname = fullname;
+            this.birthYear = birthYear;
+        }
+
+        calcAge() {
+            return 2021 - this.birthYear;
+        }
+
+        // Getter
+        get age() {
+            return 2021 - this.birthYear;
+        }
+
+        // Setter
+        set fullName(name) {
+            if (name.includes(' ')) {
+                this._fullName = name; // _fullName is a convention to indicate that this is a private property since we are conflicting with the constructor parameter
+            } else {
+                alert(`${name} is not a full name!`);
+            }
+        }
+
+        get fullName() {
+            return this._fullName;
+        }
+    }
+
+    //To use the getter and setter, we don't need to call them like methods, we can use them like properties.
+
+    const jonas = new Person('Jonas Schmedtmann', 1991);
+    console.log(jonas.age); // 30
+    console.log(jonas.fullName); // Jonas Schmedtmann
+    ```
+
+## STATIC METHODS
+- Static methods are methods that are available on the class, but not on the instances.
+- For example ```Array.from()``` is a static method.
+    - You cannot call it on an array, you call it on the Array class.
+    - ```Array.from(document.querySelectorAll('h1'));```
+    - But it will not work for array instance like ```[1, 2, 3].from()``` because it is not available on the array instance.
+- Use case is mainly helper functions that are not tied to a particular object but are relevant to all objects of a certain class.
+
+    ```javascript
+    class Person {
+        constructor(fullname, birthYear) {
+            this.fullname = fullname;
+            this.birthYear = birthYear;
+        }
+        /////////////////////////////////
+        // Instance method
+        /////////////////////////////////
+        calcAge() {
+            return 2021 - this.birthYear;
+        }
+
+        // Getter
+        get age() {
+            return 2021 - this.birthYear;
+        }
+
+        // Setter
+        set fullName(name) {
+            if (name.includes(' ')) {
+                this._fullName = name; // _fullName is a convention to indicate that this is a private property since we are conflicting with the constructor parameter
+            } else {
+                alert(`${name} is not a full name!`);
+            }
+        }
+
+        get fullName() {
+            return this._fullName;
+        }
+        /////////////////////////////////
+        // Static method
+        /////////////////////////////////
+        static hey() {
+            console.log('Hey there!');
+        }
+    }
+    ```
