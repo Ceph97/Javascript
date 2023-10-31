@@ -1,5 +1,5 @@
 'use strict';
-
+/*
 ///////////////////////////////////////
 // Constructor Functions and the new Operator
 ///////////////////////////////////////
@@ -118,3 +118,93 @@ PersonCl.hey = function () {
     console.log('Hey there 👋');
     console.log(this);
 }
+
+///////////////////////////////////////
+// Object.create
+///////////////////////////////////////
+const PersonProto = {
+    calcAge() {
+        console.log(2037 - this.birthYear);
+    },
+
+    init(firstName, birthYear) {
+        this.firstName = firstName;
+        this.birthYear = birthYear;
+    }
+};
+
+const steven = Object.create(PersonProto);
+console.log(steven);
+steven.init('Steven', 1991);
+steven.calcAge();
+*/
+
+////////////////////////////////////////////////////////
+// Inheritance Between "Classes": Constructor Functions
+////////////////////////////////////////////////////////
+const Person = function (firstName, birthYear) {
+    this.firstName = firstName;
+    this.birthYear = birthYear;
+}
+
+Person.prototype.calcAge = function () {
+    console.log(2037 - this.birthYear);
+}
+
+const Student = function (firstName, birthYear, course) {
+    Person.call(this, firstName, birthYear);
+    this.course = course;
+}
+
+// Linking prototypes
+Student.prototype = Object.create(Person.prototype);
+
+Student.prototype.introduce = function () {
+    console.log(`My name is ${this.firstName} and I study ${this.course}`);
+}
+
+const mike = new Student('Mike', 2020, 'Computer Science');
+mike.introduce();
+mike.calcAge();
+
+console.log(mike.__proto__);
+console.log(mike.__proto__.__proto__);
+console.dir(Student.prototype.constructor); // Person
+
+// To change the constructor of the prototype
+Student.prototype.constructor = Student;
+
+console.dir(Student.prototype.constructor); // Student
+
+
+////////////////////////////////////////////////////////
+//  Another Class Example
+////////////////////////////////////////////////////////
+
+class Account {
+    constructor(owner, currency, pin) {
+        this.owner = owner;
+        this.currency = currency;
+        this._pin = pin;
+        this._movements = [];
+        this.locale = navigator.language;
+
+        console.log(`Thanks for opening an account, ${owner}`);
+    }
+
+    // Public interface
+    deposit(val) {
+        this._movements.push(val);
+    }
+
+    withdraw(val) {
+        this.deposit(-val);
+    }
+
+}
+
+const acc1 = new Account('Jonas', 'EUR', 1111);
+acc1.deposit(250);
+acc1.withdraw(140);
+
+console.log(acc1);

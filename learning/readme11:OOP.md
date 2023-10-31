@@ -1,4 +1,4 @@
-# OBJECT ORIENTED PROGRAMMING IN JAVASCRIPT
+# OBJECT ORIENTED PROGRAMMING IN JAVASCRIPT
 
 ## Introduction
 
@@ -424,3 +424,283 @@
         }
     }
     ```
+
+    - Another way of creating a static method
+        - This will not be available on the prototype of the class.
+        ```javascript
+        Person.hey = function() {
+            console.log('Hey there!');
+        }
+        ```
+
+## OBJECT.CREATE()
+- There is an idea of prototypal inheritance in JavaScript. but there is no classes.
+- We create objects and then we can use prototypal inheritance to create new objects based on existing objects.
+- For example:
+    ```javascript
+    // Prototype object
+    const PersonProto = {
+        calcAge() {
+            return 2021 - this.birthYear;
+        },
+
+        // Init method, can be used as a constructor
+        init(firstName, birthYear) {
+            this.firstName = firstName;
+            this.birthYear = birthYear;
+        }
+    };
+
+    // Create an object based on the prototype object
+    const steven = Object.create(PersonProto);
+
+    steven.init('Steven', 1991);
+    console.log(steven.calcAge()); // 30
+    ```
+    - As you can see, it is very straightforward to create objects based on a prototype object.
+
+
+## INHERITANCE BETWEEN "CLASSES": CONSTRUCTOR FUNCTIONS
+- We can use constructor functions to implement inheritance.
+- For example, we can create a ```Student``` constructor function that inherits from the ```Person``` constructor function.
+- To make sure the 2 constructor functions are linked, we need to set the prototype of the ```Student``` constructor function to the ```Person``` constructor function.
+- For example:
+```javascript
+
+// Person constructor function
+const Person = function (firstName, birthYear) {
+    this.firstName = firstName;
+    this.birthYear = birthYear;
+}
+
+// Add a method to the Person prototype
+Person.prototype.calcAge = function () {
+    console.log(2037 - this.birthYear);
+}
+
+// Student constructor function
+// Person.call(this, firstName, birthYear);
+const Student = function (firstName, birthYear, course) {
+    Person.call(this, firstName, birthYear);
+    this.course = course;
+}
+
+// Linking prototypes
+Student.prototype = Object.create(Person.prototype);
+
+// Student.prototype.constructor = Student;
+Student.prototype.introduce = function () {
+    console.log(`My name is ${this.firstName} and I study ${this.course}`);
+}
+
+const mike = new Student('Mike', 2020, 'Computer Science');
+mike.introduce();
+mike.calcAge();
+```
+## INHERITANCE BETWEEN "CLASSES": ES6 CLASSES
+- We can also use ES6 classes to implement inheritance.
+    - We use the ```extends``` keyword to inherit from another class.
+    - We use the ```super()``` function to call the constructor function of the parent class.
+        - Super must be called first. It is used to create the ```this``` keyword.
+        - We can also add new properties to the child class.
+- For example:
+```javascript
+class Person {
+    constructor(firstName, birthYear) {
+        this.firstName = firstName;
+        this.birthYear = birthYear;
+    }
+
+    calcAge() {
+        console.log(2037 - this.birthYear);
+    }
+}
+
+// Student class inherits from Person class
+class Student extends Person {
+    constructor(firstName, birthYear, course) {
+        // Super must be called first
+        super(firstName, birthYear);
+        // Add new properties
+        this.course = course;
+    }
+
+    introduce() {
+        console.log(`My name is ${this.firstName} and I study ${this.course}`);
+    }
+}
+
+const mike = new Student('Mike', 2020, 'Computer Science');
+```
+- If you do not require any new properties, you can omit the constructor function in the child class.
+    - For example:
+    ```javascript
+    class Student extends Person {
+        constructor(firstName, birthYear, course) {
+            super(firstName, birthYear);
+            this.course = course;
+        }
+
+        introduce() {
+            console.log(`My name is ${this.firstName} and I study ${this.course}`);
+        }
+    }
+    ```
+    - Can be written as:
+    ```javascript
+    class Student extends Person {
+
+    }
+    ```
+    - This will still work because the child class will inherit the constructor function from the parent class.
+    - However, if you do not have a constructor function in the child class, you cannot add new properties to the child class.
+
+## INHERITANCE BETWEEN "CLASSES": OBJECT.CREATE()
+- We can also use ```Object.create()``` to implement inheritance.
+- For example:
+```javascript
+// Person prototype object
+const PersonProto = {
+    calcAge() {
+        console.log(2037 - this.birthYear);
+    },
+
+    init(firstName, birthYear) {
+        this.firstName = firstName;
+        this.birthYear = birthYear;
+    }
+};
+
+// Student prototype object
+const StudentProto = Object.create(PersonProto);
+
+// Add new properties to Student prototype object
+StudentProto.init = function (firstName, birthYear, course) {
+    PersonProto.init.call(this, firstName, birthYear);
+    this.course = course;
+}
+
+// Add new method to Student prototype object
+StudentProto.introduce = function () {
+    console.log(`My name is ${this.firstName} and I study ${this.course}`);
+}
+
+// Create a new object based on the Student prototype object
+const mike = Object.create(StudentProto);
+mike.init('Mike', 2020, 'Computer Science');
+mike.introduce();
+mike.calcAge();
+```
+
+<h3>NOTE: We can create more fields in the constructor that are not based from any args, these are called Protected properties</h3>
+
+```javascript
+class Account {
+    constructor(owner, currency, pin) {
+        this.owner = owner;
+        this.currency = currency;
+        this._pin = pin;
+
+        // Protected property
+        this._movements = [];
+        this.locale = navigator.language;
+
+        // We can execute a code block inside the constructor when the object is created
+        console.log(`Thanks for opening an account, ${owner}`);
+    }
+
+    //we can add values to the protected property using a public interface
+    deposit(val) {
+        this._movements.push(val);
+    }
+
+    withdraw(val) {
+        this.deposit(-val);
+    }
+```
+
+## ENCAPSULATION: PROTECTED PROPERTIES AND METHODS
+- Encapsulation is the bundling of data and methods that work on that data within one unit, e.g. a class or object.
+- We use encapsulation to hide implementation details from the outside world. This is called data privacy.
+    - This is important because we don't want code outside of our class to manipulate our data in unexpected ways.
+- Also allows us to change implementation without breaking external code.
+- In JS we do not have truly private properties and methods called ```protected properties```, at the moment it is just conversional.
+    - We use the ```_``` underscore to indicate that a property or method is protected.
+
+## TRULY PRIVATE CLASS FIELDS AND METHODS (ES2021)
+- We can use ```#``` to indicate that a property or method is truly private.
+- This is a new feature in ES2021, so it is not supported by all browsers yet by the time of writing this. That is subject to change in the future.
+    - Public fields
+        - ```this.locale = navigator.language;```
+    - Private fields
+        - ```#movements = [];```
+    - Public methods
+        - ```deposit(val){}```
+    - Private methods
+        - ```#approveLoan(val){}```
+- For example:
+```javascript
+class Account {
+    // Public fields (instances)
+    locale = navigator.language;
+
+    // Private fields (instances)
+    #movements = [];
+    #pin;
+
+    constructor(owner, currency, pin) {
+        //Public
+        this.owner = owner;
+        this.currency = currency;
+        
+        // Private property
+        this.#movements = [];
+        this.#pin = pin;
+        this.locale = navigator.language;
+
+        // We can execute a code block inside the constructor when the object is created
+        console.log(`Thanks for opening an account, ${owner}`);
+    }
+
+    //we can add values to the protected property using a public interface
+    deposit(val) {
+        this.#movements.push(val);
+        return this; // return this to enable method chaining
+    }
+
+    withdraw(val) {
+        this.deposit(-val);
+    }
+
+    // Private method
+    #approveLoan(val) {
+        return true;
+    }
+
+    requestLoan(val) {
+        if (this.#approveLoan(val)) {
+            this.deposit(val);
+            console.log(`Loan approved`);
+        }
+    }
+
+    // Static method
+    static helper() {
+        console.log('Helper');
+    }
+}
+```
+
+## CHAINING METHODS
+- We can chain methods that return ```this```. This is called method chaining.
+```javascript
+return this;
+```
+
+- For example:
+```javascript
+    deposit(val) {
+        this.#movements.push(val);
+        return this; // return this to enable method chaining
+    }
+```
