@@ -147,3 +147,28 @@ map.on('click', function (mapEvent) {
         .openPopup();
 });
 ```
+
+### EVENT HANDLERS IN CLASSES 
+- Always remember that the ```this``` keyword is only assigned a value when an object calls a method.
+- In an event handler function, the ```this``` keyword will point to the DOM element on which the handler is attached. 
+- So, in an event handler function, we cannot use the ```this``` keyword to access the properties of the class.
+- To solve this problem, we can use the ```bind()``` method to bind the ```this``` keyword to the class.
+
+
+### LOCAL STORAGE
+- The localStorage and sessionStorage properties allow to save key/value pairs in a web browser.
+- The localStorage object stores data with no expiration date. The data will not be deleted when the browser is closed, and will be available the next day, week, or year.
+- This allows us to store data in the browser and then retrieve it later. This is useful for storing the workout data in the browser, so that we can retrieve it later when the user comes back to the application.
+- It is important to note that the data stored in the localStorage is stored as a string. So, we need to convert the data to a number or an object before storing it in the localStorage.
+- Do not store sensitive data in the localStorage, since it is not encrypted and can be accessed by anyone.
+- Its also a small storage space, so we should not store too much data in it.
+
+```javascript
+// localStorage
+localStorage.setItem('key', 'value');
+localStorage.getItem('key');
+localStorage.removeItem('key');
+localStorage.clear();
+```
+
+- When we recover the data from the localStorage, it is stored as a string. So, we need to convert it back to object or number before using it. Hence we can loose the prototype chain of the object.
