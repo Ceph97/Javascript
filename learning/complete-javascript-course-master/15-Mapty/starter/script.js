@@ -343,6 +343,12 @@ class App {
             this._renderWorkout(work);
         });
     };
+
+    // this function resets the local storage
+    reset(){
+        localStorage.removeItem('workouts');
+        location.reload();
+    }
 }
 
 
