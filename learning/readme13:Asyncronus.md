@@ -151,3 +151,155 @@ const getCountryAndNeighborData = function (country) {
 
 getCountryAndNeighborData('Thailand');
 ```
+
+## PROMISES AND FETCH API
+- ```A promise``` is an object that represents the eventual completion (or failure) of an asynchronous operation and its resulting value.
+    - In simpler terms it is a placeholder for a future value to be returned by an asynchronous operation.
+    - A response from an AJAX call is a promise.
+    - Promise that you will win money in the lottery.
+
+- A promise is a returned object to which you attach callbacks, instead of passing callbacks into a function.
+- ```A promise``` is in one of these states:
+    - ```pending```: initial state, neither fulfilled nor rejected.
+    - ```fulfilled```: meaning that the operation was completed successfully.
+    - ```rejected```: meaning that the operation failed.
+
+- ```A promise``` is settled if it’s not pending (it has been resolved or rejected). Sometimes people use resolved and settled to mean the same thing: not pending.
+- For example, the following code snippet shows a promise that is resolved after 1 second.
+
+```javascript
+const promise = new Promise((resolve, reject) => {
+    setTimeout(() => {
+        resolve('Success');
+    }, 1000);
+});
+```
+- You can either ```consume``` the promise returned from an API or ```build``` it yourself.
+
+### Consuming Promises
+- Consuming a promise means that you are using a promise returned from an API.
+- A promise returns a stream of data, which you can consume using the ```then()``` method.
+- You will need to pass ```response.json()``` to the response object to convert the response to JSON format for it to be readable. However .json() returns a promise, so you will need to use another ```then()``` method to consume the promise.
+
+```javascript
+fetch('https://restcountries.com/v3.1/name/Thailand')
+    .then(response => response.json())
+    .then(data => console.log(data));
+
+    //Another way to write it
+    const getCountryData = function (country) {
+    fetch(`https://restcountries.com/v3.1/name/${country}`)
+        .then(function (response) {
+            console.log(response);
+            return response.json(); //returns a promise as well so need to chain another .then
+        }).then(function (data) {
+            console.log(data);
+            renderCountryData(data[0]);
+        });
+    };
+```
+- You can consume a promise using the ```then()``` method. The ```then()``` method takes two arguments: a callback for success and another for failure.
+
+### Chaining Promises
+- You can chain promises using the ```then()``` method. The ```then()``` method returns a promise, which allows you to chain another ```then()``` method.
+    - Hence when you return a .json() promise, you can chain another .then() method to consume the promise.
+- Enables flat chain of asyncronus operations without nesting callbacks.
+- Always return a promise in a .then() method to enable chaining.
+
+```javascript
+const getCountryData = function (country) {
+    fetch(`https://restcountries.com/v3.1/name/${country}`)
+        .then(function (response) {
+            return response.json(); //returns a promise as well so need to chain another .then
+        }).then(function (data) {
+            renderCountryData(data[0]);
+
+            if (!data[0].borders) return;
+            const neighbor = data[0].borders[0];
+            console.log(neighbor);
+         
+            //Country 2
+            return fetch(`https://restcountries.com/v3.1/alpha/${neighbor}`);
+        }).then(function (response) {
+            return response.json();
+        }).then(function (data) {
+            [data] = data; //destructure the array
+            renderCountryData(data, 'neighbour');
+        });
+}
+
+getCountryData('Japan');
+```
+
+### Handling Rejected Promises
+- You can handle rejected promises using the ```catch()``` method. The ```catch()``` method takes a callback function as an argument.
+- The second argument of the ```then()``` method is equivalent to the ```catch()``` method.
+```.then(successCallback, failureCallback)``` is the same as ```.then(successCallback).catch(failureCallback)```.
+
+```javascript
+    fetch(`https://restcountries.com/v3.1/name/${country}`)
+        .then(function (response) {
+            return response.json(); //returns a promise as well so need to chain another .then()
+            //catch errors
+        
+
+        },err => alert(err));
+
+        //Another way to write it
+        fetch(`https://restcountries.com/v3.1/name/${country}`).then(respose => response.json(), err => alert(err));
+
+```
+- A better way of handling errors is to use the ```catch()``` method at the end of the promise chain.
+  - This will catch any errors that occur in any of the promises in the chain regardless of where they occur.
+
+```javascript
+const renderError = function (msg) {
+    countriesContainer.insertAdjacentText('beforeend', msg);
+    countriesContainer.style.opacity = 1;
+};
+
+const getCountryData = function (country) {
+    fetch(`https://restcountries.com/v3.1/name/${country}`)
+        .then(function (response) {
+            return response.json(); //returns a promise as well so need to chain another .then()
+            //catch errors
+        
+
+        }).then(function (data) {
+            renderCountryData(data[0]);
+
+            if (!data[0].borders) return;
+            const neighbor = data[0].borders[0];
+            console.log(neighbor);
+         
+            //Country 2
+            return fetch(`https://restcountries.com/v3.1/alpha/${neighbor}`);
+        }).then(function (response) {
+            return response.json();
+        }).then(function (data) {
+            [data] = data; //destructure the array
+            renderCountryData(data, 'neighbour');
+        }).catch(function (err) {
+            // alert(`${err} 💥💥💥`);
+            console.error(`${err} 💥💥💥`);
+            renderError(`Something went wrong 💥💥💥 ${err.message}. Try again!`);
+        });
+}
+```
+
+### FINALLY METHOD
+- The ```finally()``` method is used to run a piece of code regardless of the outcome of the promise.
+
+### THROWING ERRORS MANUALLY
+- You can throw errors manually using the ```throw``` keyword.
+- The ```throw``` keyword is used to throw a custom error.
+- The ```throw``` keyword is used to throw an error when a condition is met.
+- The ```throw``` keyword is used to throw an error when a promise is rejected.
+
+```javascript
+if (!response.ok) throw new Error(`Country not found (${response.status})`);
+```
+```new Error()``` is a constructor function that creates a new error object.
+- This error object can be handled using the ```catch()``` method.
+
+
