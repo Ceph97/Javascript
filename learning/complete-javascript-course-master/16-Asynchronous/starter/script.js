@@ -22,7 +22,7 @@ const renderCountryData = function (data, className = '') {
     <img class="arms__img" src="${data.coatOfArms.svg}" />
   </article>`;
     countriesContainer.insertAdjacentHTML('beforeend', html);
-    // countriesContainer.style.opacity = 1;
+    countriesContainer.style.opacity = 1;
 
 };
 
@@ -31,12 +31,65 @@ const renderError = function (msg) {
     // countriesContainer.style.opacity = 1;
 };
 
+///////////////////////////////////////
+// ASYNC AWAIT
+///////////////////////////////////////
+const getPosition = function () {
+    return new Promise(function (resolve, reject) {
+        navigator.geolocation.getCurrentPosition(resolve, reject);
+    });
+};
+const whereAmI = async function () {
+
+    // Geolocation
+    const pos = await getPosition();
+    const { latitude: lat, longitude: lng } = pos.coords;
+
+    // Reverse geocoding
+    const resGeo = await fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`);
+    const dataGeo = await resGeo.json();
+    console.log(dataGeo);
+
+    //Country Data
+    const res = await fetch(`https://restcountries.com/v3.1/name/${dataGeo.country}`);
+    const data = await res.json(); //await works like .then() but it waits for the promise to resolve
+    console.log(data);
+    renderCountryData(data[0]);
+};
+
+whereAmI();
+
+
+
+/*
+///////////////////////////////////////
+// Promisify Geolocation API
+///////////////////////////////////////
+
+// Same as below but using the Geolocation API without promisify
+// navigator.geolocation.getCurrentPosition(
+//     position => console.log(position),
+//     err => console.error(err)
+// );
+
+// Promisify Geolocation API
+const getPosition = function () {
+    return new Promise(function (resolve, reject) {
+        navigator.geolocation.getCurrentPosition(
+            position => resolve(position),
+            err => reject(err)
+        );
+    });
+    // return new Promise((resolve, reject) => navigator.geolocation.getCurrentPosition(resolve, reject));
+};
+
+getPosition().then(pos => {return pos.coords}).then(coords => { return coords.accuracy}).then(acc => console.log(`+/- ${acc}`));
 
 ///////////////////////////////////////
 // Promises and the Fetch API
 ///////////////////////////////////////
 
-
+/*
 const getJSON = function (url, errorMsg = 'Something went wrong') {
     return fetch(url).then(function (response) {
         if (!response.ok) throw new Error(`${errorMsg} (${response.status})`);
@@ -77,6 +130,52 @@ const getJSON = function (url, errorMsg = 'Something went wrong') {
 btn.addEventListener('click', function () {
     getCountryData('Japan');
 });
+*/
+
+///////////////////////////////////////
+// The Event Loop in Practice
+///////////////////////////////////////
+/*
+console.log('Test start');
+setTimeout(() => console.log('0 sec timer'), 0);
+Promise.resolve('Resolved promise 1').then(res => console.log(res));
+console.log('Test end');
+
+Promise.resolve('Resolved promise 2').then(res => {
+    for (let i = 0; i < 100000; i++) { }
+    console.log(res);
+});
+*/
+
+///////////////////////////////////////
+// Building a Simple Promise
+///////////////////////////////////////
+/*
+const lotteryPromise = new Promise(function (resolve, reject) {
+    console.log('Lottery draw is happening 🔮');
+    setTimeout(function () {
+        if (Math.random() >= 0.5) {
+            resolve('You WIN 💰');
+        } else {
+            reject(new Error('You lost your money 💩'));
+        }
+    }, 2000);
+});
+
+lotteryPromise.then(res => console.log(res)).catch(err => console.error(err));
+///////////////////////////////////////
+// Promisifying setTimeout
+///////////////////////////////////////
+const wait = function (seconds) {
+    return new Promise(function (resolve) {
+        setTimeout(resolve, seconds * 1000);
+    });
+};
+
+wait(2).then(() => {
+    console.log('I waited for 2 seconds');
+    return wait(1);
+}).then(() => console.log('I waited for 1 second'));
 
 
 /*
