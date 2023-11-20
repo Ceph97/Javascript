@@ -456,3 +456,115 @@ const whereAmI = async function (country) {
     }
 };
 ```
+
+### RETURNING VALUES FROM ASYNC FUNCTIONS
+- Assync functions always return a promise.
+- Example of returning a value from an async function:
+```javascript
+const whereAmI = async function (country) {
+    try {
+        const res = await fetch(`https://restcountries.com/v3.1/name/${country}`);
+        const data = await res.json();
+        renderCountryData(data[0]);
+
+        return `You are in ${data[0].name.common}`;
+    } catch (err) {
+        console.error(`${err} 💥💥💥`);
+        renderError(`Something went wrong 💥💥💥 ${err.message}. Try again!`);
+    }
+};
+
+//return value from async function
+const city = whereAmI('Japan');
+console.log(city); //returns a promise
+
+//You can consume the promise using the then() method
+whereAmI('Japan').then(city => console.log(city));
+```
+
+- Using async/await to consume promises is better than using the then() method.
+```javascript
+(async function () {
+    try {
+        const city = await whereAmI('Japan');
+        console.log(city);
+    } catch (err) {
+        console.error(err);
+    }
+    console.log('Finished getting location');
+})();
+```
+
+### RUNNING PROMISES IN PARALLEL (PROMISE.ALL)
+- You can run promises in parallel using the ```Promise.all()``` method.
+- Never work an assync function without a catch() block for error handling.
+- When one of the promises is rejected, the ```Promise.all()``` method will reject the entire promise.
+
+```javascript
+
+const getJSON = function (url, errorMsg = 'Something went wrong') {
+    return fetch(url).then(response => {
+        if (!response.ok) throw new Error(`${errorMsg} (${response.status})`);
+        return response.json();
+    });
+};
+
+const get3Countries = async function (c1, c2, c3) {
+    const data = await Promise.all([
+        getJSON(`https://restcountries.com/v3.1/name/${c1}`),
+        getJSON(`https://restcountries.com/v3.1/name/${c2}`),
+        getJSON(`https://restcountries.com/v3.1/name/${c3}`)
+    ]);
+    console.log(data);
+    data.forEach(element => {element = element[0]; renderCountryData(element);
+        console.log(element.capital[0]);
+    });
+};
+
+get3Countries('portugal', 'canada', 'tanzania');
+```
+
+### OTHER PROMISE COMBINATORS: RACE, ALLSETTLED AND ANY
+
+1. promise.race()
+    - The first promise to be fulfilled or rejected will be returned.
+    - The other promises will be ignored.
+    - This is useful when you want to fetch data from multiple sources and use the one that returns the fastest.
+    ```javascript
+    (asstnc function () {
+        const res = await Promise.race([
+            getJSON(`https://restcountries.com/v3.1/name/italy`),
+            getJSON(`https://restcountries.com/v3.1/name/egypt`),
+            getJSON(`https://restcountries.com/v3.1/name/mexico`)
+        ]);
+        console.log(res[0]);
+    })();
+    ```
+2. promise.allSettled()
+    - Returns an array of all the promises, regardless of whether they are fulfilled or rejected.
+    - This is useful when you want to handle errors for each promise individually.
+    ```javascript
+    (async function () {
+        const res = await Promise.allSettled([
+            getJSON(`https://restcountries.com/v3.1/name/italy`),
+            getJSON(`https://restcountries.com/v3.1/name/egypt`),
+            getJSON(`https://restcountries.com/v3.1/name/mexico`)
+        ]);
+        console.log(res[0]);
+    })();
+    ```
+3. promise.any()
+    - Returns the first fulfilled promise.
+    - If all promises are rejected, it will return an error.
+    - This is useful when you want to fetch data from multiple sources and use the one that returns the fastest.
+    ```javascript
+    (async function () {
+        const res = await Promise.any([
+            getJSON(`https://restcountries.com/v3.1/name/italy`),
+            getJSON(`https://restcountries.com/v3.1/name/egypt`),
+            getJSON(`https://restcountries.com/v3.1/name/mexico`)
+        ]);
+        console.log(res[0]);
+    })();
+    ```
+

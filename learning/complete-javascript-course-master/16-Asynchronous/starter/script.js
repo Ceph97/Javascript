@@ -4,6 +4,14 @@ const btn = document.querySelector('.btn-country');
 const countriesContainer = document.querySelector('.countries');
 
 ///////////////////////////////////////
+const getJSON = function (url, errorMsg = 'Something went wrong') {
+    return fetch(url).then(function (response) {
+        if (!response.ok) throw new Error(`${errorMsg} (${response.status})`);
+
+        return response.json();
+    });
+
+ };
 
 const renderCountryData = function (data, className = '') {
     //Object.values(data.currencies) returns an array of the values of the object
@@ -32,8 +40,26 @@ const renderError = function (msg) {
 };
 
 ///////////////////////////////////////
+// Parallel Promises
+///////////////////////////////////////
+
+const get3Countries = async function (c1, c2, c3) {
+    const data = await Promise.all([
+        getJSON(`https://restcountries.com/v3.1/name/${c1}`),
+        getJSON(`https://restcountries.com/v3.1/name/${c2}`),
+        getJSON(`https://restcountries.com/v3.1/name/${c3}`)
+    ]);
+    console.log(data);
+    data.forEach(element => {element = element[0]; renderCountryData(element);
+        console.log(element.capital[0]);
+    });
+};
+get3Countries('portugal', 'canada', 'tanzania');
+
+///////////////////////////////////////
 // ASYNC AWAIT
 ///////////////////////////////////////
+/*
 const getPosition = function () {
     return new Promise(function (resolve, reject) {
         navigator.geolocation.getCurrentPosition(resolve, reject);
@@ -48,19 +74,26 @@ const whereAmI = async function () {
     // Reverse geocoding
     const resGeo = await fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`);
     const dataGeo = await resGeo.json();
-    console.log(dataGeo);
 
     //Country Data
     const res = await fetch(`https://restcountries.com/v3.1/name/${dataGeo.country}`);
     const data = await res.json(); //await works like .then() but it waits for the promise to resolve
-    console.log(data);
     renderCountryData(data[0]);
 };
+// console.log('1: Will get location');
+// whereAmI();
+// console.log('3: Finished getting location');
 
-whereAmI();
-
-
-
+// const whereAmI = function (country) {
+(async function () {
+    try {
+        const city = await whereAmI();
+        console.log(city);
+    } catch (err) {
+        console.error(err.message);
+    }
+    console.log('2: Finished getting location');
+})();
 /*
 ///////////////////////////////////////
 // Promisify Geolocation API
